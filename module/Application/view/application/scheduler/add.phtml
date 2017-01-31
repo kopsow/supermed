@@ -1,0 +1,101 @@
+<?php 
+echo $this->headLink()->prependStylesheet($this->basePath() . '/datepicker/css/bootstrap-datepicker.css');
+
+
+echo $this->headScript()->prependFile($this->basePath() . '/datepicker/locales/bootstrap-datepicker.pl.min.js');
+echo $this->headScript()->prependFile($this->basePath() . '/datepicker/js/bootstrap-datepicker.min.js');
+
+?>
+
+<?php 
+$physicians->prepare();
+
+ echo $this->form()->openTag($physicians);
+ echo $this->formCollection($physicians);
+ echo $this->form()->closeTag();
+ 
+?>
+<br />
+<div id="datepicker" data-date="<?php echo date("d/m/Y")?>" date-format="YYYY-MM-DD">Data rozpoczęcia dyżuru</div>
+        <p>Godzina rozpoczęcia dyżuru:<select id="godzina_start">
+                <option>7:00</option>
+                <option>7:30</option>
+                <option>8:00</option>
+                <option>8:30</option>
+                <option>9:00</option>
+                <option>9:30</option>
+    </select></p>
+    <p>Godzina zakończenia dyżuru:<select id="godzina_koniec">
+                <option>15:00</option>
+                <option>16:00</option>
+                <option>17:00</option>
+                <option>18:00</option>
+                <option>19:00</option>
+                <option>20:00</option>
+    </select></p>
+            <p>Czas trwania jednej wizyty: <select id="interval">
+                    <option>10 minut</option>
+                    <option>15 minut</option>
+                    <option>20 minut</option>
+                    <option>30 minut</option>
+        </select></p>
+        
+        <div class="btn btn-success">Zapisz</div>
+<script>
+$('#datepicker').datepicker({
+    language: 'pl',
+    locale:'pl'
+    
+    });
+$('#datepicker').on('changeDate', function() {
+    $('#my_hidden_input').val(
+        $('#datepicker').datepicker('getFormattedDate')
+    );
+    var date = new Date();
+    date = $('#datepicker').datepicker('getDate');
+    console.log(date.getMonth());
+});
+ $('.btn').click(function(){
+     var result = new Object();
+     result.data = $('#datepicker').data('datepicker').getFormattedDate('yyyy-mm-dd');
+     result.poczatek = $('#godzina_start').val();
+     result.koniec= $('#godzina_koniec').val();
+     result.interval = $('#interval').val();
+     ajax(result);
+     console.log(result);
+ });
+ 
+ function ajax(result)
+ {
+     
+     $.ajax({
+    type     : "POST",
+    url      : "/ajax/addScheduler",
+    data     : {
+        data        : result.data,
+        poczatek    : result.poczatek,
+        koniec      : result.koniec,
+        interval    : result.interval
+    },
+    dataType : 'json',
+    success: function(ret) {
+        //ten fragment wykona się po pomyślnym zakończeniu połączenia - gdy dostaliśmy odpowiedź od serwera nie będącą błędem (404, 400, 500 itp)
+        //atrybut ret zawiera dane zwrócone z serwera
+       
+        jQuery.each(ret, function(i, ob) {
+             
+            console.log(i, ob);
+        });
+    },
+    complete: function() {
+        //ten fragment wykona się po zakończeniu łączenia - nie ważne czy wystąpił błąd, czy sukces
+        console.log("complet");
+    },
+    error: function(jqXHR, errorText, errorThrown) {
+        //ten fragment wykona się w przypadku BŁĘDU
+        //do zmiennej errorText zostanie przekazany błąd
+        console.log(errorText);
+    }
+});
+ }
+</script>
