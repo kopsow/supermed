@@ -26,6 +26,10 @@ use Application\Model\RoleTable;
 
 use Application\Model\Scheduler;
 use Application\Model\SchedulerTable;
+
+use Application\Model\Days;
+use Application\Model\DaysTable;
+
 class Module
 {
     public function onBootstrap(MvcEvent $e)
@@ -99,6 +103,17 @@ class Module
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Role());
                     return new TableGateway('role', $dbAdapter, null, $resultSetPrototype);
+                },
+                'Days\Model\DaysTable'  =>  function($sm)  {
+                    $tableGateway = $sm->get('DaysTableGateway');
+                    $table = new DaysTable($tableGateway);
+                    return $table;
+                },
+                'DaysTableGateway' =>function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Days());
+                    return new TableGateway('days', $dbAdapter, null, $resultSetPrototype);
                 },
                 'Scheduler\Model\SchedulerTable'  =>  function($sm)  {
                     $tableGateway = $sm->get('SchedulerTableGateway');

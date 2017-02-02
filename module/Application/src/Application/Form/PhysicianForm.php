@@ -20,6 +20,49 @@ class PhysicianForm extends Form {
         parent::__construct('physician');
         
         $this->add(array(
+                'type'      =>  'text',
+                'name'      =>  'name',
+                'options'   =>  array(
+                    'label' =>  'Imię',
+                ),
+                'attributes'=>  array(
+                    'class' =>  'form-control'
+                )
+        ));
+        
+        $this->add(array(
+                'type'      =>  'text',
+                'name'      =>  'surname',
+                'options'   =>  array(
+                    'label' =>  'Nazwisko',
+                ),
+                'attributes'=>  array(
+                    'class' =>  'form-control'
+                )
+        ));
+        
+        $this->add(array(
+                'type'      =>  'text',
+                'name'      =>  'pesel',
+                'options'   =>  array(
+                    'label' =>  'PESEL',
+                ),
+                'attributes'=>  array(
+                    'class' =>  'form-control'
+                )
+        ));
+        $this->add(array(
+                'type'      =>  'password',
+                'name'      =>  'password',
+                'options'   =>  array(
+                    'label' =>  'Hasło',
+                ),
+                'attributes'=>  array(
+                    'class' =>  'form-control'
+                )
+        ));
+        
+        $this->add(array(
                'type'       =>  'Zend\Form\Element\Select',
                'name'       =>  'physician',
                'options'    => array (
@@ -29,6 +72,21 @@ class PhysicianForm extends Form {
                'attributes' =>  array (
                    'id'     =>  'sel1',
                    'class'  =>  'form-control',
+               )
+        ));
+        
+        $this->add(array(
+               'type'       =>  'Zend\Form\Element\Select',
+               'name'       =>  'physicianScheduler',
+               'options'    => array (   
+                    'value_options' => $this->getPhysician(), 
+                    'empty_option'  => '--- Wybierz lekarza ---',
+                                       
+               ),
+               'attributes' =>  array (
+                   'id'     =>  'sel1',
+                   'class'  =>  'form-control',
+                   
                )
         ));
     }
@@ -41,9 +99,10 @@ class PhysicianForm extends Form {
         
         $selectData = array();
         foreach ($result as $res) {
+            
             $selectData[$res['id']] =   $res['name'];
         }
-        
+       
         return $selectData;
     }
 }

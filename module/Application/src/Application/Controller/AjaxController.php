@@ -56,19 +56,10 @@ class AjaxController extends AbstractActionController
        if ($requset->isXmlHttpRequest()) {
            
             $response->setStatusCode(200);
-            $response->setContent($requset->getPost('koniec'));      
-            $date= new Date($requset->getPost('data'));
-            $scheduler = new Scheduler();
-            $data = array(
-                'date_start' => '2017-01-01',
-                'date_end'  =>  '201702-05',
-                'physician_id'=>1,
-                'schedule' =>'null'
-            );
-            $scheduler->exchangeArray($data);
-            $this->getScheduleTable()->saveScheduler($scheduler());
+            $result = $response->setContent($requset->getPost('koniec'));      
+            
             $json = new JsonModel(array(
-                '10' => $date
+                $requset->getPost('dni')[1]
             ));
           return $json;
         }

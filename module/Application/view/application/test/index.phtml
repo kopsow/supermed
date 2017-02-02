@@ -1,0 +1,34 @@
+<?php 
+echo $this->headLink()->prependStylesheet($this->basePath() . '/datepicker/css/bootstrap-datepicker.css');
+echo $this->headScript()->prependFile($this->basePath() . '/datepicker/locales/bootstrap-datepicker.pl.min.js');
+echo $this->headScript()->prependFile($this->basePath() . '/datepicker/js/bootstrap-datepicker.min.js');
+
+?>
+<div id="datepicker" class="right" data-date="<?php echo date("d/m/Y")?>" date-format="YYYY-MM-DD">Początek grafiku</div>
+
+<div id="show"></div>
+<script>
+$('#datepicker').datepicker({
+    language: 'pl',
+    locale:'pl',
+    multidate: true,
+    todayHighlight:true,
+    todayBtn:true,
+    daysOfWeekDisabled: [0,6]
+    });
+$('#datepicker').on('changeDate', function() {
+    $('#my_hidden_input').val(
+        $('#datepicker').datepicker('getFormattedDate')
+    );
+    var result = new Object();
+    result.date = $('#datepicker').data('datepicker').getFormattedDate('yyyy-mm-dd');
+    //console.log(result.date);
+    $('#show').empty();
+    $('#show').append(result.date);
+        
+
+});
+
+
+
+</script>

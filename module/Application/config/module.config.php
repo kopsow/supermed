@@ -50,12 +50,43 @@ return array(
                     ),
                 ),
             ),
+            'schedulerShow' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route'    => '/harmonogram/lista[/:action][/:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Scheduler',
+                        'action'     => 'show',
+                    ),
+                ),
+            ),
+            'physician' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route'    => '/harmonogram/lekarz[/:action][/:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Physician',
+                        'action'     => 'index',
+                    ),
+                ),
+            ),
             'ajax' => array(
                 'type' => 'segment',
                 'options' => array(
                     'route'    => '/ajax[/][/:action]',
                     'defaults' => array(
                         'controller' => 'Application\Controller\Ajax',
+                        'action'     => 'index',                        
+                    ),
+                    
+                ),
+            ),
+            'test' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route'    => '/test[/][/:action]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Test',
                         'action'     => 'index',                        
                     ),
                     
@@ -118,6 +149,7 @@ return array(
             'Application\Controller\Index' => 'Application\Controller\IndexController',
             'Application\Controller\Scheduler' => 'Application\Controller\SchedulerController',
             'Application\Controller\Physician' => 'Application\Controller\PhysicianController',
+            'Application\Controller\Test' => 'Application\Controller\TestController',
         ),
     ),
     'view_manager' => array(
