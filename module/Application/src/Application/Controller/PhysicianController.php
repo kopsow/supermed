@@ -40,9 +40,17 @@ class PhysicianController extends AbstractActionController
     public function indexAction()
     {
         
-       $result = $this->getHolidaysTable()->fetchAll();
+       
         return new ViewModel(array(
-            'wynik' =>  $result,
+            'physicians' =>  $this->getPhysicianTable()->fetchAll(),
+        ));
+    }
+    
+    public function addAction() 
+    {
+        $form = new \Application\Form\PhysicianForm();
+        return new ViewModel(array(
+            'form'  => $form
         ));
     }
 }

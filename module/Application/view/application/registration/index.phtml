@@ -1,0 +1,67 @@
+<?php 
+echo $this->headLink()->prependStylesheet($this->basePath() . '/datepicker/css/bootstrap-datepicker.css');
+echo $this->headScript()->prependFile($this->basePath() . '/datepicker/locales/bootstrap-datepicker.pl.min.js');
+echo $this->headScript()->prependFile($this->basePath() . '/datepicker/js/bootstrap-datepicker.min.js');
+?>
+<div class="row">
+    <div class="col-md-12">
+<?php 
+$physicians->setAttribute('action', $this->url('registration', array('action' => 'check')));
+$physicians->prepare();
+ echo $this->form()->openTag($physicians);
+ echo $this->formRow($physicians->get('physicianScheduler'));
+ 
+?></div>
+    <div class="col-md-6">
+        <div id="datepicker" class="right" data-date="<?php echo date("d/m/Y")?>" date-format="YYYY-MM-DD">Wybierz dzień wizyty</div>
+       
+    </div>
+</div>
+<script>
+    
+    $('#datepicker').datepicker({
+    language: 'pl',
+    locale:'pl',
+    todayHighlight:true,
+    daysOfWeekDisabled: [0,6],
+    multidate: true   
+    
+    });
+$('#datepicker').on('changeDate', function() {
+    $('#my_hidden_input').val(
+        $('#datepicker').datepicker('getFormattedDate')
+    );
+    $('form').append('<input type="hidden" name="data" value="'+$('#datepicker').data('datepicker').getFormattedDate('yyyy-mm-dd')+'" />');
+    $('form').append('<input type="hidden" name="physicianId" value="'+$('#sel1').val()+'" />');
+   // $('form').submit();
+   
+   
+});
+
+$('#sel1').change(function(){
+    ajax();
+    });
+
+function ajax() 
+{
+    $('#datepicker').datepicker({
+    
+    todayHighlight:true,
+    daysOfWeekDisabled: [0,6]
+    
+    });
+    console.log('dziala');
+   
+    $.post(
+            "/ajax/rejestracja",
+        {
+        physicianId :   $('#sel1').val()
+        },
+        function(data){
+            
+             $('#datepicker').datepicker("setDates", data);
+        }
+    );
+    
+}
+</script>

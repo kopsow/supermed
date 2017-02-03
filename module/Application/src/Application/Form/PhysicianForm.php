@@ -26,7 +26,8 @@ class PhysicianForm extends Form {
                     'label' =>  'Imię',
                 ),
                 'attributes'=>  array(
-                    'class' =>  'form-control'
+                    'class'         =>  'form-control',
+                    'placeholder'   =>  'Podaj imię'
                 )
         ));
         
@@ -37,7 +38,8 @@ class PhysicianForm extends Form {
                     'label' =>  'Nazwisko',
                 ),
                 'attributes'=>  array(
-                    'class' =>  'form-control'
+                    'class'         =>  'form-control',
+                    'placeholder'   =>  'Podaj nazwisko'
                 )
         ));
         
@@ -48,7 +50,8 @@ class PhysicianForm extends Form {
                     'label' =>  'PESEL',
                 ),
                 'attributes'=>  array(
-                    'class' =>  'form-control'
+                    'class' =>  'form-control',
+                    'placeholder'   =>  'Podaj numer PESEL'
                 )
         ));
         $this->add(array(
@@ -59,6 +62,7 @@ class PhysicianForm extends Form {
                 ),
                 'attributes'=>  array(
                     'class' =>  'form-control'
+                    
                 )
         ));
         
@@ -89,6 +93,14 @@ class PhysicianForm extends Form {
                    
                )
         ));
+        $this->add(array(
+             'name' => 'submit',
+             'type' => 'Submit',
+             'attributes' => array(
+                 'value' => 'Zapisz',
+                 'id' => 'submitbutton',
+             ),
+         ));
     }
     
     private function getPhysician() {

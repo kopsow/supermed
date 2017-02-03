@@ -1,0 +1,44 @@
+<?php 
+$form->setAttribute('action', $this->url('physician', array('action' => 'add')));
+echo $this->form()->openTag($form);
+
+
+?>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Dodawanie nowego lekarza</h3>
+  </div>
+  <div class="panel-body">
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-pencil" aria-hidden="true" name="physician_id"></span></span>
+         <?php 
+          $form->get('name')->setOptions(array('label'=>'',));           
+          echo $this->formRow($form->get('name')); 
+         ?>
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-pencil" aria-hidden="true" name="physician_id"></span></span>
+         <?php 
+          $form->get('surname')->setOptions(array('label'=>'',));           
+          echo $this->formRow($form->get('surname')); 
+         ?>
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1"><span class="glyphicon glyphicon-pencil" aria-hidden="true" name="physician_id"></span></span>
+         <?php 
+          $form->get('pesel')->setOptions(array('label'=>'',));           
+          echo $this->formRow($form->get('pesel')); 
+         ?>
+    </div>
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon1">Hasło</span>
+         <?php 
+          $form->get('password')->setOptions(array('label'=>'',));           
+          echo $this->formRow($form->get('password')); 
+         ?>
+    </div>
+  </div>
+</div>
+<?php 
+echo $this->formSubmit($form->get('submit'));
+echo $this->form()->closeTag($form);

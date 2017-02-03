@@ -21,8 +21,13 @@ $physicians->prepare();
  
 ?></div>
     
-    <div class="col-md-2 col-md-offset-5">
-        <div id="datepicker" class="right" data-date="<?php echo date("d/m/Y")?>" date-format="YYYY-MM-DD" style="margin:0px auto;text-align: center"></div>
+    <div class="col-md-6">
+        <div id="datepicker" class="right" data-date="<?php echo date("d/m/Y")?>" date-format="YYYY-MM-DD">Początek grafiku</div>
+       
+    </div>
+    <div class="col-md-6">
+        <div id="datepicker2" data-date="<?php echo date("d/m/Y", strtotime("+28 days"))?>" date-format="YYYY-MM-DD">Koniec grafiku</div>
+       
     </div>
     <div class="col-md-12">
        <div class="panel panel-primary">
@@ -95,9 +100,8 @@ $(document).ready(function() {
 });
 $('#datepicker').datepicker({
     language: 'pl',
-    locale:'pl',  
+    locale:'pl',
     todayHighlight:true,
-    multidate: true,
     daysOfWeekDisabled: [0,6]
     
     });
@@ -106,17 +110,29 @@ $('#datepicker').on('changeDate', function() {
         $('#datepicker').datepicker('getFormattedDate')
     );
     var date = new Date();
-    
-    date = $('#datepicker').data('datepicker').getFormattedDate('yyyy-mm-dd');
-    console.log(date);
+    date = $('#datepicker').datepicker('getDate');
+    console.log(date.getMonth());
 });
 
+$('#datepicker2').datepicker({
+    language: 'pl',
+    locale:'pl',
+    todayHighlight:true,
+     daysOfWeekDisabled: [0,6]
+    });
+$('#datepicker2').on('changeDate', function() {
+    $('#my_hidden_input').val(
+        $('#datepicker2').datepicker('getFormattedDate')
+    );
+    var date = new Date();
+    date = $('#datepicker2').datepicker('getDate');
+    console.log(date.getMonth());
+});
 
  $('.btn').click(function(){
-     console.log($('#datepicker').datepicker('getDate'));
-     $('form').append('<input type="hidden" name="date" value="'+$('#datepicker').data('datepicker').getFormattedDate('yyyy-mm-dd')+'" />');
-   /*  $('form').append('<input type="hidden" name="date_start" value="'+$('#datepicker').data('datepicker').getFormattedDate('yyyy-mm-dd')+'" />');
-     $('form').append('<input type="hidden" name="date_end" value="'+$('#datepicker2').data('datepicker').getFormattedDate('yyyy-mm-dd')+'" />');*/
+     
+     $('form').append('<input type="hidden" name="date_start" value="'+$('#datepicker').data('datepicker').getFormattedDate('yyyy-mm-dd')+'" />');
+     $('form').append('<input type="hidden" name="date_end" value="'+$('#datepicker2').data('datepicker').getFormattedDate('yyyy-mm-dd')+'" />');
      $('form').submit();
      
  });

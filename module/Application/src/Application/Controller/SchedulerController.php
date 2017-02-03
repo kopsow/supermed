@@ -54,6 +54,25 @@ class SchedulerController extends AbstractActionController
     {
         
         $request = $this->getRequest();
+        
+        if ($request->isPost()) 
+        {
+           $data =  explode(',', $request->getPost('date'));
+           asort($data);
+           foreach($data as $value) {
+               switch(date("w",$value)) 
+               {
+                   
+               }
+           }
+           var_dump($data);
+        }
+        $form = new physicianForm();
+        return new ViewModel(array(
+            'physicians' =>$form,
+        ));
+        /*
+        $request = $this->getRequest();
         if ($request->isPost()) {
             
             $data_scheduler = array(
@@ -82,7 +101,7 @@ class SchedulerController extends AbstractActionController
         $form = new physicianForm();
         return new ViewModel(array(
             'physicians' =>$form,
-        ));
+        ));*/
     }
     public function deleteAction() 
     {

@@ -30,6 +30,17 @@ class DaysTable {
         }
         return $row;
     }
+    
+    public function getDaysScheduler($id)
+    {
+          $id  = (int) $id;
+        $rowset = $this->tableGateway->select(array('scheduler_id' => $id));
+        $row = $rowset->current();
+        if (!$row) {
+            throw new \Exception("Could not find row $id");
+        }
+        return $row;
+    }
 
     public function saveDays(Days $days)
     {

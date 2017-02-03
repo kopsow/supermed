@@ -65,7 +65,18 @@ class AjaxController extends AbstractActionController
         }
     
     }
-    
+    public function rejestracjaAction()
+    {
+        $request = $this->getRequest();
+        if ($request->isXmlHttpRequest()) {
+            $physicianId = $request->getPost('physicianId');
+        }
+        $json = new JsonModel(array(
+                '28-02-2017',
+                '20-02-2017'
+            ));
+          return $json;
+    }
     public function testAction(){
         $scheduler = new Scheduler();
             $data = array(

@@ -1,1 +1,22 @@
-
+<table class="table">
+ <tr>
+     <th>Imię<span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true" name="physician_id"></span></th>
+     <th>Nazwisko<span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true" name="physician_id"></span></th>
+     <th>PESEL</th>
+     
+ </tr>
+ <?php foreach ($physicians as $physician) : ?>
+ <tr>
+     
+     <td><?php echo $this->escapeHtml($physician->name);?></td>
+     <td><?php echo $this->escapeHtml($physician->surname);?></td>
+     <td><?php echo $this->escapeHtml($physician->pesel);?></td>
+     <td>
+         <a href="<?php echo $this->url('schedulerShow',
+             array('action'=>'edit', 'id' => $physician->id));?>">Edytuj</a>
+         <a href="<?php echo $this->url('schedulerShow',
+             array('action'=>'delete', 'id' => $physician->id));?>">Kasuj</a>
+     </td>
+ </tr>
+ <?php endforeach; ?>
+ </table>

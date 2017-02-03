@@ -70,6 +70,16 @@ return array(
                     ),
                 ),
             ),
+            'registration' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route'    => '/rejestracja[/:action][/:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Registration',
+                        'action'     => 'index',
+                    ),
+                ),
+            ),
             'ajax' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -149,6 +159,7 @@ return array(
             'Application\Controller\Index' => 'Application\Controller\IndexController',
             'Application\Controller\Scheduler' => 'Application\Controller\SchedulerController',
             'Application\Controller\Physician' => 'Application\Controller\PhysicianController',
+            'Application\Controller\Registration' => 'Application\Controller\RegistrationController',
             'Application\Controller\Test' => 'Application\Controller\TestController',
         ),
     ),
