@@ -7,13 +7,16 @@ use Zend\View\Model\ViewModel;
 use Zend\View\Model\JsonModel;
 
 use Application\Model\Scheduler;
+use Application\Model\Registration;
 
 class AjaxController extends AbstractActionController
 {
     
     protected $roleTable;
     protected $scheduleTable;
-    
+    protected $registrationTable;
+
+
     public function getRoleTable()
     {
         if (!$this->roleTable) {
@@ -22,13 +25,21 @@ class AjaxController extends AbstractActionController
         }
         return $this->roleTable;
     }
-    public function getScheduleTable()
+    public function getSchedulerTable()
     {
         if (!$this->scheduleTable) {
             $sm = $this->getServiceLocator();
             $this->scheduleTable = $sm->get('Scheduler\Model\SchedulerTable');
         }
         return $this->scheduleTable;
+    }
+    public function getRegistrationTable()
+    {
+        if (!$this->registrationTable) {
+            $sm = $this->getServiceLocator();
+            $this->registrationTable = $sm->get('Registration\Model\RegistrationTable');
+        }
+        return $this->registrationTable;
     }
     
     public function indexAction()
@@ -70,13 +81,19 @@ class AjaxController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isXmlHttpRequest()) {
             $physicianId = $request->getPost('physicianId');
+            $date_now   = date('m');
+            
+           $schedulers = $this->getSchedulerTable()->getSchedulerPhysician($physicianId,$date_now);
+           $result = array();
+            foreach ($schedulers as $val)
+            {
+                $result[]= date('Y-m-d',  strtotime($val->date_start));
+            }
         }
-        $json = new JsonModel(array(
-                '28-02-2017',
-                '20-02-2017'
-            ));
+        $json = new JsonModel($result);
           return $json;
     }
+    
     public function testAction(){
         $scheduler = new Scheduler();
             $data = array(
@@ -87,6 +104,46 @@ class AjaxController extends AbstractActionController
             );
             $scheduler->exchangeArray($data);
             $this->getScheduleTable()->saveScheduler($scheduler);
+    }
+    
+    public function freeHoursAction()
+    {
+        $request = $this->getRequest();
+        if ($request->isXmlHttpRequest())
+        {
+            $physicianId = $request->getPost('physicianId');
+            $visitDate = $request->getPost('visitDate');
+            $result = $this->getSchedulerTable()->getSchedulerPhysicianHours($physicianId,$visitDate);
+            $time_start = date('H:i',  strtotime($result->date_start));
+            $time_end = date('H:i',  strtotime($result->date_end));
+
+            $godzinyPrzyjec = array();
+            $godzinyPrzyjec[]=$time_start;
+
+            while ($time_start != $time_end)
+            {
+               $time_start = date('H:i',  strtotime($time_start.'+15 minutes'));
+               $godzinyPrzyjec[]=$time_start;
+            }
+            $busyHours = $this->getRegistrationTable()->busyHours($physicianId,$visitDate);
+            
+            foreach ($busyHours as $time)
+            {
+                $result = array_search(date('H:i',  strtotime($time->visit_date)), $godzinyPrzyjec);
+                if (is_numeric($result) && $result>0)
+                {
+                    //unset($godzinyPrzyjec[$result]);
+                    array_splice($godzinyPrzyjec, $result,1);
+                }
+            }
+
+           $json = new JsonModel($godzinyPrzyjec);
+              return $json;
+        } else {
+            
+              return new JsonModel(array());
+        }
+        
     }
 }
 

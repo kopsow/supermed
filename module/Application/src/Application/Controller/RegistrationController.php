@@ -5,21 +5,35 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Form\PhysicianForm;
+use Application\Form\PatientForm;
 use Zend\Db\Adapter\Adapter;
+
+use Application\Model\Registration;
+use Application\Model\RegistrationTable;
 
 class RegistrationController extends AbstractActionController
 {
     
-    public $daysTable;
+    public $schedulerTable;
+    public $registrationTable;
     
-    private $configArray = array(
-          'driver'      =>   'Mysqli',
-          'database'    =>   'supermed',
-          'username'    =>   'root',
-          'password'    =>   'kopsow82',
-          'hostname'    =>   'localhost',
-          'charset'     =>   'utf8'
-        );
+    public function getSchedulerTable()
+    {
+        if (!$this->schedulerTable) {
+            $sm = $this->getServiceLocator();
+            $this->schedulerTable = $sm->get('Scheduler\Model\SchedulerTable');
+        }
+        return $this->schedulerTable;
+    }
+    public function getRegistrationTable()
+    {
+        if (!$this->registrationTable) {
+            $sm = $this->getServiceLocator();
+            $this->registrationTable = $sm->get('Registration\Model\RegistrationTable');
+        }
+        return $this->registrationTable;
+    }
+    
     public function getDaysTable()
     {
         if (!$this->daysTable) {
@@ -30,48 +44,73 @@ class RegistrationController extends AbstractActionController
     }
     public function indexAction()
     {
+       
         $form = new PhysicianForm();
+        $formPatient = new PatientForm();
         return new ViewModel(array(
-            'physicians' =>$form,
+            'physicians' => $form,
+            'patient'    => $formPatient
         ));
     }
     
-   public function checkAction() 
-   {
-       $request = $this->getRequest();
+    public function addAction()
+    {
+        $requset = $this->getRequest();
+        
+        if ($requset->isPost())
+        {
+            $registration = new Registration();
+            $data = array(
+                'patient_id'        =>  $requset->getPost('patientSelect'),
+                'physician_id'      =>  $requset->getPost('physicianScheduler'),
+                'visit_date'        =>  $requset->getPost('dzien')." ".$requset->getPost('godzina'),
+                'registration_date' =>  date('Y-m-d H:i:s')
+            );
+            $registration->exchangeArray($data);
+            $this->getRegistrationTable()->saveRegistration($registration);
+            echo '<pre>';
+            var_dump($data);
+            echo '</pre>';
+            $this->redirect()->toRoute('registration');
+        } else {
+            $this->redirect()->toRoute('registration');
+        }
+    }
+    
+    public function showAction()
+    {
+        $result = NULL;
+        $request = $this->getRequest();
+        $patientForm = new PatientForm();
+        $physicianForm = new PhysicianForm();
+        
+        if ($request->isPost())
+        {
+            $patientId = $request->getPost('patientId');
+            $physicianId = $request->getPost('physicianId');
+            if (is_numeric($patientId) || is_numeric($physicianId))
+            {
+                $result = $this->getRegistrationTable()->showSelect($patientId,$physicianId);
+                $patientForm->get('patientSelect')->setAttribute('value',$patientId);  
+                $physicianForm->get('physicianScheduler')->setAttribute('value',$physicianId); 
+            } else {
+                 $result = $this->getRegistrationTable()->menagmentFetchAll();
+            }
+            
+        } else {
+            $result = $this->getRegistrationTable()->menagmentFetchAll();
+        }
+        
+        return new ViewModel(array(
+            'result'=>$result,
+            'physicians' => $physicianForm,
+            'patient'   =>  $patientForm
+        ));
+    }
+    
        
-       if($request->isPost()) 
-       {
-           $physicianId = $request->getPost('physicianId');
-           $data = $request->getPost('data');
-           $day = ('Wybrany dzień to: '.  strtolower(date("l",  strtotime($data))));
-           //$result =  $this->getDaysTable()->getDaysScheduler(15);
-           $this->czyPrzyjmuje($physicianId, $data, $day);
-           return '';
-       } else {
-           return $this->redirect()->toRoute('registration');
-       }
-   }
    
-   private function zakres($physician_id,$date) {
-       $id=$physician_id;
-
-       $dbAdapter = new Adapter($this->configArray);
-       $statement = $dbAdapter->query('SELECT id FROM scheduler WHERE physician_id='.$id.' AND '
-               . '(date_start>="'.$date.'"<=date_end)');
-       $result = $statement->execute();
-
-       return $result;
-   }
-   private function czyPrzyjmuje($physician_id,$date,$day)
-   {
-       $schedler_id = (int) $this->zakres($physician_id, $date)->key();
-       if ($schedler_id >0) {
-           echo $schedler_id;
-       } else {
-           echo 'Nie przyjume w tym dniu';
-       }
-   }
+  
 }
 
 

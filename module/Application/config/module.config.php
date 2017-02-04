@@ -60,6 +60,7 @@ return array(
                     ),
                 ),
             ),
+            
             'physician' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -71,12 +72,32 @@ return array(
                 ),
             ),
             'registration' => array(
-                'type' => 'segment',
+                'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
-                    'route'    => '/rejestracja[/:action][/:id]',
+                    'route'    => '/rejestracja',
                     'defaults' => array(
                         'controller' => 'Application\Controller\Registration',
                         'action'     => 'index',
+                    ),
+                ),
+            ),
+            'registrationAdd' => array(
+                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'options' => array(
+                    'route'    => '/rejestracja/add',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Registration',
+                        'action'     => 'add',
+                    ),
+                ),
+            ),
+            'registrationShow' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route'    => '/rejestracja/lista[/:action][/:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Registration',
+                        'action'     => 'show',
                     ),
                 ),
             ),

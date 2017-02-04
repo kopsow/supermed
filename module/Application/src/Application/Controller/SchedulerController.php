@@ -57,15 +57,36 @@ class SchedulerController extends AbstractActionController
         
         if ($request->isPost()) 
         {
+           
            $data =  explode(',', $request->getPost('date'));
            asort($data);
-           foreach($data as $value) {
-               switch(date("w",$value)) 
+           
+           for ($i=0 ; $i<count($data) ; $i++) 
+           {               
+               $day =  date("w",  strtotime($data[$i]));
+               
+               switch ($day)
                {
+                   case 1:  
+                       
+                       $this->addSchedulerDb($data[$i], 'mon_start', 'mon_end');
+                       break;
+                   case 2:
+                      $this->addSchedulerDb($data[$i], 'tue_start', 'tue_end');
+                       break;
+                   case 3:
+                       $this->addSchedulerDb($data[$i], 'wed_start', 'wed_end');
+                       break;
+                   case 4:
+                      $this->addSchedulerDb($data[$i], 'thu_start', 'thu_end');
+                       break;
+                   case 5:
+                       $this->addSchedulerDb($data[$i], 'fri_start', 'fri_end');
+                       break;
                    
                }
            }
-           var_dump($data);
+          
         }
         $form = new physicianForm();
         return new ViewModel(array(
@@ -145,7 +166,34 @@ class SchedulerController extends AbstractActionController
         ));
     }
     
-   
+   private function addSchedulerDb($data,$start,$end) {
+      
+       $request = $this->getRequest();
+        if ($request->getPost($start)!='00:00' && $request->getPost($end) !='00:00')
+        {            
+            
+                $date_start = new \DateTime($data.$request->getPost($start));
+                $date_end = new \DateTime($data.$request->getPost($end));
+            
+            $schedule = new Scheduler();
+            $dataSchedule = array(
+                'physician_id'   =>  $request->getPost('physician'),
+                'date_start'     =>  $date_start->format('Y-m-d H:i'),
+                'date_end'       =>  $date_end->format('Y-m-d H:i')
+            );            
+             if ($this->getSchedulerTable()->checkDate($request->getPost('physician'),$date_start->format('Y-m-d H:i')) === 0)
+             {
+                 $schedule->exchangeArray($dataSchedule);
+            $this->getSchedulerTable()->saveScheduler($schedule);
+            
+        return $this->getSchedulerTable()->lastInsertId();
+             }
+            
+                      
+        } else {
+            return false;
+        }
+   }
 }
 
 

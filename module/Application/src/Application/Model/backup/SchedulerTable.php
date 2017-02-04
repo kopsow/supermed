@@ -3,11 +3,10 @@ namespace Application\Model;
 
 use Zend\Db\TableGateway\TableGateway;
 
-
 class SchedulerTable 
 {
     protected $tableGateway;
-    
+
     public function __construct(TableGateway $tableGateway)
     {
         $this->tableGateway = $tableGateway;
@@ -90,35 +89,5 @@ class SchedulerTable
     
     public function lastInsertId() {
         return $this->tableGateway->lastInsertValue;
-    }
-    
-    public function checkDate($physician_id,$date_start) {
-        $select = $this->tableGateway->getSql()->select();
-        $select->where(array('physician_id' => 4))->where(array('date_start'=>$date_start));
-        $rowset = $this->tableGateway->selectWith($select);
-        
-        return $rowset->count();
-    }
-    
-    public function getSchedulerPhysician($id,$month)
-    {
-        
-        $select = $this->tableGateway->getSql()->select();
-        $select->where(array(
-            'physician_id'  =>$id,))->where('MONTH(date_start)='.$month);
-        $rowset = $this->tableGateway->selectWith($select);
-        
-        return $rowset;
-    }
-    
-    public function getSchedulerPhysicianHours($physician_id,$visit_date)
-    {
-        $select = $this->tableGateway->getSql()->select();
-        $select->columns(array('date_start' => new \Zend\Db\Sql\Expression('TIME(date_start)'),'date_end' => new \Zend\Db\Sql\Expression('TIME(date_end)')));
-        $select->where(array(
-            'physician_id'  =>$physician_id,))->where('DATE(date_start)="'.$visit_date.'"');
-        $rowset = $this->tableGateway->selectWith($select);
-        
-        return $rowset->current();
     }
 }

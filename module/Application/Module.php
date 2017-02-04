@@ -23,12 +23,17 @@ use Application\Model\HolidaysTable;
 use Application\Model\Role;
 use Application\Model\RoleTable;
 
-
 use Application\Model\Scheduler;
 use Application\Model\SchedulerTable;
 
 use Application\Model\Days;
 use Application\Model\DaysTable;
+
+use Application\Model\Registration;
+use Application\Model\RegistrationTable;
+
+use Application\Model\Patient;
+use Application\Model\PatientTable;
 
 class Module
 {
@@ -114,6 +119,28 @@ class Module
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Days());
                     return new TableGateway('days', $dbAdapter, null, $resultSetPrototype);
+                },
+                'Patient\Model\PatientTable'  =>  function($sm)  {
+                    $tableGateway = $sm->get('DaysTableGateway');
+                    $table = new PatientTable($tableGateway);
+                    return $table;
+                },
+                'PatientTableGateway' =>function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Patient());
+                    return new TableGateway('patient', $dbAdapter, null, $resultSetPrototype);
+                },
+                'Registration\Model\RegistrationTable'  =>  function($sm)  {
+                    $tableGateway = $sm->get('RegistrationTableGateway');
+                    $table = new RegistrationTable($tableGateway);
+                    return $table;
+                },
+                'RegistrationTableGateway' =>function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Registration());
+                    return new TableGateway('registration', $dbAdapter, null, $resultSetPrototype);
                 },
                 'Scheduler\Model\SchedulerTable'  =>  function($sm)  {
                     $tableGateway = $sm->get('SchedulerTableGateway');
