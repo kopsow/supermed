@@ -10,6 +10,7 @@ class Patient {
     public $password;
     public $birthday;
     public $tel;
+    public $email;
     public $verified;
     
     
@@ -21,6 +22,7 @@ class Patient {
         $this->password     = (isset($data['password']))    ? $data['password']     : null;
         $this->birthday     = (isset($data['birthday']))    ? $data['birthday']     : null;
         $this->tel          = (isset($data['tel']))         ? $data['tel']          : null;
+        $this->email        = (isset($data['email']))       ? $data['email']        : null;
         $this->verified     = (isset($data['verified']))    ? $data['verified']     : null;
     }
 }

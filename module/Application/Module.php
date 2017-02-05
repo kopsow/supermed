@@ -121,7 +121,7 @@ class Module
                     return new TableGateway('days', $dbAdapter, null, $resultSetPrototype);
                 },
                 'Patient\Model\PatientTable'  =>  function($sm)  {
-                    $tableGateway = $sm->get('DaysTableGateway');
+                    $tableGateway = $sm->get('PatientTableGateway');
                     $table = new PatientTable($tableGateway);
                     return $table;
                 },

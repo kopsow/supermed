@@ -21,10 +21,7 @@ class PatientForm extends Form {
         
         $this->add(array(
                 'type'      =>  'text',
-                'name'      =>  'name',
-                'options'   =>  array(
-                    'label' =>  'Imię',
-                ),
+                'name'      =>  'name',                
                 'attributes'=>  array(
                     'class'         =>  'form-control',
                     'placeholder'   =>  'Podaj imię'
@@ -33,10 +30,7 @@ class PatientForm extends Form {
         
         $this->add(array(
                 'type'      =>  'text',
-                'name'      =>  'surname',
-                'options'   =>  array(
-                    'label' =>  'Nazwisko',
-                ),
+                'name'      =>  'surname',                
                 'attributes'=>  array(
                     'class'         =>  'form-control',
                     'placeholder'   =>  'Podaj nazwisko'
@@ -46,9 +40,7 @@ class PatientForm extends Form {
         $this->add(array(
                 'type'      =>  'text',
                 'name'      =>  'pesel',
-                'options'   =>  array(
-                    'label' =>  'PESEL',
-                ),
+               
                 'attributes'=>  array(
                     'class'         =>  'form-control',
                     'placeholder'   =>  'Podaj pesel'
@@ -56,11 +48,29 @@ class PatientForm extends Form {
         ));
         
         $this->add(array(
+                'type'      =>  'text',
+                'name'      =>  'tel',
+                
+                'attributes'=>  array(
+                    'class'         =>  'form-control',
+                    'placeholder'   =>  'Podaj telefon'
+                )
+        ));
+        
+        $this->add(array(
+                'type'      =>  'text',
+                'name'      =>  'email',
+                
+                'attributes'=>  array(
+                    'class'         =>  'form-control',
+                    'placeholder'   =>  'Podaj adres email'
+                )
+        ));
+        
+        $this->add(array(
                 'type'      =>  'password',
                 'name'      =>  'password',
-                'options'   =>  array(
-                    'label' =>  'Imię',
-                ),
+                
                 'attributes'=>  array(
                     'class'         =>  'form-control',
                     'placeholder'   =>  'Podaj hasło'
@@ -70,9 +80,7 @@ class PatientForm extends Form {
         $this->add(array(
                 'type'      =>  'date',
                 'name'      =>  'birthday',
-                'options'   =>  array(
-                    'label' =>  'Data urodzenia',
-                ),
+                
                 'attributes'=>  array(
                     'class'         =>  'form-control',
                     'placeholder'   =>  'Podaj datę urodzenia'
@@ -83,9 +91,7 @@ class PatientForm extends Form {
         $this->add(array(
                 'type'      =>  'checkbox',
                 'name'      =>  'verified',
-                'options'   =>  array(
-                    'label' =>  'Zweryfikowany',
-                ),
+                
                 'attributes'=>  array(
                     'class'         =>  'form-control',
                     

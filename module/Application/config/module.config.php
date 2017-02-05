@@ -30,6 +30,17 @@ return array(
                     ),
                 ),
             ),
+            'patient' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route'    => '/pacjent[/:action][/:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Patient',
+                        'action'     => 'index',
+                    ),
+                ),
+            ),
+            
             'scheduler' => array(
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
@@ -179,6 +190,7 @@ return array(
             'Application\Controller\Ajax' => 'Application\Controller\AjaxController',
             'Application\Controller\Index' => 'Application\Controller\IndexController',
             'Application\Controller\Scheduler' => 'Application\Controller\SchedulerController',
+            'Application\Controller\Patient' => 'Application\Controller\PatientController',
             'Application\Controller\Physician' => 'Application\Controller\PhysicianController',
             'Application\Controller\Registration' => 'Application\Controller\RegistrationController',
             'Application\Controller\Test' => 'Application\Controller\TestController',

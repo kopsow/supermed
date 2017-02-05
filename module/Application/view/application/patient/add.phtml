@@ -1,0 +1,22 @@
+<div class="row">
+    <div class="col-md-12 ">
+<div class="input-group">
+<?php
+$formPatient->setAttribute('action', $this->url('patient',array('action'=>'add')))->prepare();
+echo $this->form()->openTag($formPatient);
+echo $this->formRow($formPatient->get('name'));
+echo $this->formRow($formPatient->get('surname'));
+echo $this->formRow($formPatient->get('pesel'));
+echo $this->formRow($formPatient->get('password'));
+echo $this->formRow($formPatient->get('birthday'));
+echo $this->formRow($formPatient->get('tel'));
+echo $this->formRow($formPatient->get('email'));
+echo $this->form()->closeTag($formPatient);
+
+
+
+?>
+    <div class="btn btn-success center-block">Zapisz</div>
+</div>
+</div>
+    </div>

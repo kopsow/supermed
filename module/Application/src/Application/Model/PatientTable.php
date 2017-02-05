@@ -13,8 +13,7 @@ class PatientTable {
         $this->tableGateway = $tableGateway;
     }
     
-    public function fetchAll()
-    {
+    public function fetchAll()    {
         
         $resultSet = $this->tableGateway->select();
         return $resultSet;
@@ -51,6 +50,7 @@ class PatientTable {
             'password'      => $patient->password,
             'birthday'      => $patient->birthday,
             'tel'           => $patient->tel,
+            'email'         => $patient->email,
             'verified'      => $patient->verified,              
         );
 
@@ -76,6 +76,7 @@ class PatientTable {
             'password'      => $patient->password,
             'birthday'      => $patient->birthday,
             'tel'           => $patient->tel,
+            'email'         => $patient->email,
             'verified'      => $patient->verified,
             
         );
