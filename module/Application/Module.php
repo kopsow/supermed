@@ -156,7 +156,7 @@ class Module
                 'mail.transport' => function ($sm) {
                     $config = $sm->get('Config');
                     $transport = new \Zend\Mail\Transport\Smtp();                
-                    $transport->setOptions(new \Zend\Mail\Transport\SmtpOptions($config['mail']['transport']['options']));
+                    $transport->setOptions(new \Zend\Mail\Transport\SmtpOptions($config['mail']['transport']));
                     return $transport;
                 },
             ),

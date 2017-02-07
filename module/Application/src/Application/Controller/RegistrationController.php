@@ -11,6 +11,9 @@ use Zend\Db\Adapter\Adapter;
 use Application\Model\Registration;
 use Application\Model\RegistrationTable;
 
+use Zend\Mail\Message;
+use Zend\Mime;
+
 class RegistrationController extends AbstractActionController
 {
     
@@ -106,6 +109,46 @@ class RegistrationController extends AbstractActionController
             'physicians' => $physicianForm,
             'patient'   =>  $patientForm
         ));
+    }
+    
+    public function cancelAction()
+    {
+        $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
+        $name = 'Rejestracja Super-med.pl';
+        $email='rejestracja@super-med.pl';
+        $message='Wizyta została anulowana';
+            // Email content
+            $viewContent = new \Zend\View\Model\ViewModel(
+                array(
+                    'name'    => $name,
+                    'email'   => $email,
+                    'message' => $message,
+            ));
+            $viewContent->setTemplate('email/cancel'); // set in module.config.php
+            $content = $renderer->render($viewContent);
+
+            // Email layout
+            $viewLayout = new \Zend\View\Model\ViewModel(array('content' => $content));
+            $viewLayout->setTemplate('email/layout'); // set in module.config.php
+
+            // Email
+            
+            $html =  new \Zend\Mime\Part($renderer->render($viewLayout));
+            $html->type = 'text/html';
+            $body = new \Zend\Mime\Message();
+            $body->setParts(array($html));
+        
+        $transport = $this->getServiceLocator()->get('mail.transport');
+        
+        $objEmail = new \Zend\Mail\Message();
+        
+        
+        $objEmail->setBody($body);
+        $objEmail->setFrom('rejestracja@super-med.pl', 'From');
+        $objEmail->addTo('kopsow@gmail.com', 'To');
+        $objEmail->setSubject('Subject here');
+        $transport->send($objEmail); 
+        return '';
     }
     
        

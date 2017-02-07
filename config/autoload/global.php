@@ -21,15 +21,13 @@ return array(
     ),
     'mail' => array(
     'transport' => array(
-        'options' => array(
-           'name'              => 'NetMed',
-            'host'              => 'super-med.pl',
+        'name'              => 'SuperMed',
+            'host'              => 's44.linuxpl.com',
             'connection_class'  => 'login',
             'connection_config' => array(
-                'username' => 'kontakt@super-med.pl',
+                'username' => 'rejestracja@super-med.pl',
                 'password' => 'AoT7kIhf',
             ),
-        ),  
     ),
     ),
     'service_manager' => array(
