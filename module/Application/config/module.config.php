@@ -112,6 +112,16 @@ return array(
                     ),
                 ),
             ),
+            'autoryzacja' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route'    => '/autoryzacja[/:action]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Authorization',
+                        'action'     => 'login',
+                    ),
+                ),
+            ),
             'ajax' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -194,6 +204,7 @@ return array(
             'Application\Controller\Physician' => 'Application\Controller\PhysicianController',
             'Application\Controller\Registration' => 'Application\Controller\RegistrationController',
             'Application\Controller\Administrator' => 'Application\Controller\AdministratorController',
+            'Application\Controller\Authorization' => 'Application\Controller\AuthorizationController',
             'Application\Controller\Test' => 'Application\Controller\TestController',
         ),
     ),
