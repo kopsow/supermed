@@ -73,7 +73,10 @@ class RegistrationController extends AbstractActionController
         $formPatient = new PatientForm();
         return new ViewModel(array(
             'physicians' => $form,
-            'patient'    => $formPatient
+            'patient'    => $formPatient,
+            'lekarze'    => $this->getPhysicianTable()->fetchAll(),
+            'dni'  => $this->getSchedulerTable()->fetchAll(),
+            'godziny'  => $this->getSchedulerTable()->fetchAll(),
         ));
     }
     
@@ -183,6 +186,18 @@ class RegistrationController extends AbstractActionController
         return '';
     }
     
+    
+    public function stepOneAction()
+    {
+        $request = $this->request;
+        
+        if ($request->isPost())
+        {
+            
+        } else {
+            $this->redirect()->toRoute('registration');
+        }
+    }
        
    
   

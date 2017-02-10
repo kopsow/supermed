@@ -73,9 +73,9 @@ return array(
                 ),
             ),
             'registration' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => 'segment',
                 'options' => array(
-                    'route'    => '/rejestracja',
+                    'route'    => '/rejestracja[/:action]',
                     'defaults' => array(
                         'controller' => 'Application\Controller\Registration',
                         'action'     => 'index',

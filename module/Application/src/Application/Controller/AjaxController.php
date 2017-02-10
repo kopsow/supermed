@@ -112,7 +112,7 @@ class AjaxController extends AbstractActionController
         if ($request->isXmlHttpRequest())
         {
             $physicianId = $request->getPost('physicianId');
-            $visitDate = $request->getPost('visitDate');
+            $visitDate = trim($request->getPost('visitDate'));
             $result = $this->getSchedulerTable()->getSchedulerPhysicianHours($physicianId,$visitDate);
             $time_start = date('H:i',  strtotime($result->date_start));
             $time_end = date('H:i',  strtotime($result->date_end));

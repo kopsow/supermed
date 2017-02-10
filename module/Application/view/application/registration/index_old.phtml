@@ -1,0 +1,122 @@
+<?php 
+echo $this->headLink()->prependStylesheet($this->basePath() . '/datepicker/css/bootstrap-datepicker.css');
+echo $this->headScript()->prependFile($this->basePath() . '/datepicker/locales/bootstrap-datepicker.pl.min.js');
+echo $this->headScript()->prependFile($this->basePath() . '/datepicker/js/bootstrap-datepicker.min.js');
+?>
+<div class="row">
+    <div class="col-md-12">
+<?php 
+$physicians->setAttribute('action', $this->url('registrationAdd', array('action' => 'add')));
+$physicians->prepare();
+echo $this->form()->openTag($physicians);
+echo $this->formRow($physicians->get('physicianScheduler'));
+echo $this->formRow($patient->get('patientSelect')); 
+?></div>
+    <div class="col-md-6">
+        <!--<div id="datepicker" class="right" data-date="<?php echo date("d/m/Y")?>" date-format="YYYY-MM-DD">Wybierz dzień wizyty-->
+        <select id="dzien" name="dzien" class="form-control">
+            <option value="">--- Wybierz dzień ---</option>
+        </select>
+    </div>
+       <div class="col-md-6">
+        <select id="godzina" name="godzina" class="form-control">
+            <option value="">--- Wybierz godzinę ---</option>
+        </select>
+    </div>
+    <div class="col-md-2 col-md-offset-5">
+        <div class="btn btn-success center-block">Zapisz</div>
+    </div>
+    </div>
+    
+<script>
+    $('.btn').click(function(){
+       $('form').submit(); 
+    });
+    $('#datepicker').datepicker({
+    language: 'pl',
+    locale:'pl',
+    todayHighlight:true,
+    daysOfWeekDisabled: [0,6],
+    multidate: true   
+    
+    });
+$('#datepicker').on('changeDate', function() {
+    $('#my_hidden_input').val(
+        $('#datepicker').datepicker('getFormattedDate')
+    );
+    $('form').append('<input type="hidden" name="data" value="'+$('#datepicker').data('datepicker').getFormattedDate('yyyy-mm-dd')+'" />');
+    $('form').append('<input type="hidden" name="physicianId" value="'+$('#sel1').val()+'" />');
+   // $('form').submit();
+   
+   
+});
+
+$('#sel1').change(function(){
+    ajax();
+    });
+$("#dzien").change(function(){
+    console.log($('#dzien').val());
+    console.log($('#sel1').val());    $.ajax({
+        type     : "POST",
+        url      : "/ajax/freeHours",
+        dataType : 'json',
+        data     : {
+            physicianId :   $('#sel1').val(),
+            visitDate   :   $('#dzien').val()
+        },
+        success: function(ret) {
+            console.log('sukces');
+            console.log(ret);
+           // $('#godzina option:not(:first-of-type)').remove();
+                for (i=0 ; i < ret.length ; i++) 
+                {                    
+                    $('#godzina').append('<option>'+ret[i]+'</option>');
+                }
+                
+        },
+        complete: function() {
+console.log('complet');
+        },
+        error: function(jqXHR, errorText, errorThrown) {
+console.log(errorText);
+        }
+    });
+    });
+
+function ajax() 
+{
+    $('#datepicker').datepicker({
+    
+    todayHighlight:true,
+    daysOfWeekDisabled: [0,6],
+    datesDisabled:[]
+    
+    });
+    
+     
+    $.ajax({
+        type     : "POST",
+        url      : "/ajax/rejestracja",
+        data     : {
+            physicianId :   $('#sel1').val()
+        },
+        success: function(ret) {
+            console.log(ret);
+            $('#dzien option:not(:first-of-type)').remove();
+            for (i=0 ; i < ret.length ; i++) 
+                {
+                    
+                    $('#dzien').append('<option>'+ret[i]+'</option>');
+                }
+                
+        },
+        complete: function() {
+
+        },
+        error: function(jqXHR, errorText, errorThrown) {
+
+        }
+    });
+    
+}
+</script>
