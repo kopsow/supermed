@@ -1,0 +1,22 @@
+<h1>Aktualizacja danych lekarza</h1>
+<?php
+$form->setAttribute('action', $this->url('physician',array('action'=>'save','id'=>$id)))->prepare();
+echo $this->form()->openTag($form);
+echo $this->formRow($form->get('name'));
+echo $this->formRow($form->get('surname'));
+echo $this->formRow($form->get('pesel'));
+echo $this->formRow($form->get('password'));
+
+
+?>
+<div class="btn btn-success center-block">Zapisz</div>
+<?php echo $this->form()->closeTag($form); ?>
+
+<script>
+$(document).ready(function() {
+    $('.btn').click(function(){
+        
+        $('form').submit();
+    });
+});
+</script>

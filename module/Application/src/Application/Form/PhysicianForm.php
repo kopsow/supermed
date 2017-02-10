@@ -22,9 +22,7 @@ class PhysicianForm extends Form {
         $this->add(array(
                 'type'      =>  'text',
                 'name'      =>  'name',
-                'options'   =>  array(
-                    'label' =>  'Imię',
-                ),
+                
                 'attributes'=>  array(
                     'class'         =>  'form-control',
                     'placeholder'   =>  'Podaj imię'
@@ -34,9 +32,7 @@ class PhysicianForm extends Form {
         $this->add(array(
                 'type'      =>  'text',
                 'name'      =>  'surname',
-                'options'   =>  array(
-                    'label' =>  'Nazwisko',
-                ),
+                
                 'attributes'=>  array(
                     'class'         =>  'form-control',
                     'placeholder'   =>  'Podaj nazwisko'
@@ -46,9 +42,7 @@ class PhysicianForm extends Form {
         $this->add(array(
                 'type'      =>  'text',
                 'name'      =>  'pesel',
-                'options'   =>  array(
-                    'label' =>  'PESEL',
-                ),
+                
                 'attributes'=>  array(
                     'class' =>  'form-control',
                     'placeholder'   =>  'Podaj numer PESEL'
@@ -57,11 +51,10 @@ class PhysicianForm extends Form {
         $this->add(array(
                 'type'      =>  'password',
                 'name'      =>  'password',
-                'options'   =>  array(
-                    'label' =>  'Hasło',
-                ),
+                
                 'attributes'=>  array(
-                    'class' =>  'form-control'
+                    'class' =>  'form-control',
+                    'placeholder'   =>  'Podaj hasło'
                     
                 )
         ));

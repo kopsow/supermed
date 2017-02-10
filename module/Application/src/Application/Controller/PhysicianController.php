@@ -65,11 +65,75 @@ class PhysicianController extends AbstractActionController
             $physician->exchangeArray($data);
             $this->getPhysicianTable()->savePhysician($physician);
             $this->redirect()->toRoute('physician');
-        } else {
-            $this->redirect()->toRoute('home');
-        }
+        } 
         return new ViewModel(array(
             'form'  => $form
         ));
+    }
+    
+    public function deleteAction()
+    {
+         $id   =   (int) $this->params()->fromRoute('id');
+         if (!$id){
+             $this->redirect()->toRoute('home');
+         } else {
+             $this->getPhysicianTable()->deletePhysician($id);
+             $this->redirect()->toRoute('physician');
+         }
+         echo $id;
+    }
+    
+    public function editAction()
+    {
+        $id = (int) $this->params()->fromRoute('id');
+        
+        if (!$id)
+        {
+            $this->redirect()->toRoute('physician');
+        } else {
+            $physician = $this->getPhysicianTable()->getPhysician($id);
+            $data = array(
+                'name'      =>  $physician->name,
+                'surname'   =>  $physician->surname,
+                'pesel'     =>  $physician->pesel,
+                'password'  =>  $physician->password
+                
+            );
+            $form = new \Application\Form\PhysicianForm;
+            $form->setData($data);
+            
+            return new ViewModel(array(
+                'id'    =>  $id,
+                'form'  =>  $form
+            ));
+          
+        }
+    }
+    
+    public function saveAction()
+    {
+        $id = $this->params()->fromRoute('id');
+        $request = $this->getRequest();
+        if (!$id)
+        {
+            $this->redirect()->toRoute('home');
+        } else {
+           
+            if ($request->isPost())
+            {
+                $physician = new \Application\Model\Physician();
+
+                $data = array(
+                    'name'      =>  $request->getPost('name'),
+                    'surname'   =>  $request->getPost('surname'),
+                    'pesel'     =>  $request->getPost('pesel'),
+                    'password'  =>  $request->getPost('password')
+                );
+
+                $physician->exchangeArray($data);
+                $this->getPhysicianTable()->savePhysician($physician);
+                $this->redirect()->toRoute('physician');
+            } 
+        }
     }
 }
