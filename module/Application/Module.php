@@ -20,6 +20,9 @@ use Application\Model\PhysicianTable;
 use Application\Model\Holidays;
 use Application\Model\HolidaysTable;
 
+use Application\Model\Users;
+use Application\Model\UsersTable;
+
 use Application\Model\Role;
 use Application\Model\RoleTable;
 

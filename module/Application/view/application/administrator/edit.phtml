@@ -1,0 +1,24 @@
+<h1>Aktualizacja danych użytkownika</h1>
+<?php
+$form->setAttribute('action', $this->url('administrator',array('action'=>'save','id'=>$id)))->prepare();
+echo $this->form()->openTag($form);
+echo $this->formRow($form->get('name'));
+echo $this->formRow($form->get('surname'));
+echo $this->formRow($form->get('email'));
+echo $this->formRow($form->get('password'));
+echo $this->formRow($form->get('roleSelect'));
+
+
+
+?>
+<div class="btn btn-success center-block">Zapisz</div>
+<?php echo $this->form()->closeTag($form); ?>
+
+<script>
+$(document).ready(function() {
+    $('.btn').click(function(){
+        
+        $('form').submit();
+    });
+});
+</script>

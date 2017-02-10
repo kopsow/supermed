@@ -102,6 +102,16 @@ return array(
                     ),
                 ),
             ),
+            'administrator' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route'    => '/administrator[/:action][/:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Administrator',
+                        'action'     => 'index',
+                    ),
+                ),
+            ),
             'ajax' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -183,6 +193,7 @@ return array(
             'Application\Controller\Patient' => 'Application\Controller\PatientController',
             'Application\Controller\Physician' => 'Application\Controller\PhysicianController',
             'Application\Controller\Registration' => 'Application\Controller\RegistrationController',
+            'Application\Controller\Administrator' => 'Application\Controller\AdministratorController',
             'Application\Controller\Test' => 'Application\Controller\TestController',
         ),
     ),

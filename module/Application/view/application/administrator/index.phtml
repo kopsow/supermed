@@ -1,0 +1,31 @@
+<form action="<?php echo $this->url('administrator')?>" method="POST">
+<table class="table">
+    <tr>
+        <th>Imię <span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true" name="physician_id"></span></th>
+        <th>Nazwisko <span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true" name="physician_id"></span></th>
+        <th>Adres email<span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true" name="physician_id"></span></th>
+        <th>Rola<span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true" name="physician_id"></span></th>
+        <th>Opcje</th>
+    </tr>
+    <tr>
+       
+        
+    </tr>
+<?php foreach ($users as $user) : ?>
+    <tr>
+        <td><?php echo $this->escapeHtml($user->name);?></td>
+        <td><?php echo $this->escapeHtml($user->surname);?></td>
+        <td><?php echo $this->escapeHtml($user->email);?></td>
+        <td><?php echo $this->escapeHtml($user->role_id);?></td>
+       
+        <td>
+            <a href="<?php echo $this->url('administrator',
+             array('action'=>'edit', 'id' => $user->id));?>">Edytuj</a>
+            <a href="<?php echo $this->url('administrator',
+             array('action'=>'delete', 'id' => $user->id));?>">Usuń</a>
+         
+     </td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+ 

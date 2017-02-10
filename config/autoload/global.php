@@ -30,6 +30,14 @@ return array(
             ),
     ),
     ),
+    'adapterDb' => array(
+          'driver'      =>   'Mysqli',
+          'database'    =>   'supermed',
+          'username'    =>   'root',
+          'password'    =>   'kopsow82',
+          'hostname'    =>   'localhost',
+          'charset'     =>   'utf8'
+    ),
     'service_manager' => array(
         'factories' => array(
             'Zend\Db\Adapter\Adapter'
