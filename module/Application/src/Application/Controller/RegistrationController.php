@@ -19,6 +19,8 @@ class RegistrationController extends AbstractActionController
     
     public $schedulerTable;
     public $registrationTable;
+    public $physicianTable;
+    public $patientTable;
     
     public function getSchedulerTable()
     {
@@ -37,6 +39,15 @@ class RegistrationController extends AbstractActionController
         return $this->registrationTable;
     }
     
+    public function getPhysicianTable()
+    {
+        if (!$this->physicianTable) {
+            $sm = $this->getServiceLocator();
+            $this->physicianTable = $sm->get('Physician\Model\PhysicianTable');
+        }
+        return $this->physicianTable;
+    }
+    
     public function getDaysTable()
     {
         if (!$this->daysTable) {
@@ -45,6 +56,16 @@ class RegistrationController extends AbstractActionController
         }
         return $this->daysTable;
     }
+    
+    public function getPatientTable()
+    {
+        if (!$this->patientTable) {
+            $sm = $this->getServiceLocator();
+            $this->patientTable = $sm->get('Patient\Model\PatientTable');
+        }
+        return $this->patientTable;
+    }
+    
     public function indexAction()
     {
        
@@ -113,16 +134,26 @@ class RegistrationController extends AbstractActionController
     
     public function cancelAction()
     {
+        
+        
+       $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+             return $this->redirect()->toRoute('registration');
+         } else {
+               $wynik = $this->getRegistrationTable()->getRegistration($id);
+               $day = date('Y-m-d',  strtotime($wynik->visit_date));
+               $hour = date('H:i',  strtotime($wynik->visit_date));
+               $physician = $this->getPhysicianTable()->getPhysician($wynik->physician_id);
+         }
         $renderer = $this->getServiceLocator()->get('Zend\View\Renderer\RendererInterface');
-        $name = 'Rejestracja Super-med.pl';
-        $email='rejestracja@super-med.pl';
-        $message='Wizyta została anulowana';
+       
+       
             // Email content
             $viewContent = new \Zend\View\Model\ViewModel(
                 array(
-                    'name'    => $name,
-                    'email'   => $email,
-                    'message' => $message,
+                    'physician'    => $physician->name." ".$physician->surname,
+                    'day'          => $day,
+                    'hour'         => $hour,
             ));
             $viewContent->setTemplate('email/cancel'); // set in module.config.php
             $content = $renderer->render($viewContent);
@@ -144,9 +175,10 @@ class RegistrationController extends AbstractActionController
         
         
         $objEmail->setBody($body);
-        $objEmail->setFrom('rejestracja@super-med.pl', 'From');
-        $objEmail->addTo('kopsow@gmail.com', 'To');
-        $objEmail->setSubject('Subject here');
+        $objEmail->setFrom('rejestracja@super-med.pl', 'Super-Med');
+        $patient = $this->getPatientTable()->getPatient($wynik->patient_id);
+        $objEmail->addTo($patient->email, $patient->name." ".$patient->surname);
+        $objEmail->setSubject('Informacja o anluowaniu wizyty');
         $transport->send($objEmail); 
         return '';
     }

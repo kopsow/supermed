@@ -49,6 +49,25 @@ class PhysicianController extends AbstractActionController
     public function addAction() 
     {
         $form = new \Application\Form\PhysicianForm();
+        $request = $this->getRequest();
+        
+        if ($request->isPost())
+        {
+            $physician = new \Application\Model\Physician();
+            
+            $data = array(
+                'name'      =>  $request->getPost('name'),
+                'surname'   =>  $request->getPost('surname'),
+                'pesel'     =>  $request->getPost('pesel'),
+                'password'  =>  $request->getPost('password')
+            );
+            
+            $physician->exchangeArray($data);
+            $this->getPhysicianTable()->savePhysician($physician);
+            $this->redirect()->toRoute('physician');
+        } else {
+            $this->redirect()->toRoute('home');
+        }
         return new ViewModel(array(
             'form'  => $form
         ));

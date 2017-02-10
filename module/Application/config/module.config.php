@@ -19,17 +19,7 @@ return array(
                         'action'     => 'index',
                     ),
                 ),
-            ),
-            'physician' => array(
-                'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
-                    'route'    => '/lekarz',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\Physician',
-                        'action'     => 'index',
-                    ),
-                ),
-            ),
+            ),           
             'patient' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -75,7 +65,7 @@ return array(
             'physician' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route'    => '/harmonogram/lekarz[/:action][/:id]',
+                    'route'    => '/lekarz[/:action][/:id]',
                     'defaults' => array(
                         'controller' => 'Application\Controller\Physician',
                         'action'     => 'index',

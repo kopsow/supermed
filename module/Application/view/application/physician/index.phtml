@@ -12,9 +12,9 @@
      <td><?php echo $this->escapeHtml($physician->surname);?></td>
      <td><?php echo $this->escapeHtml($physician->pesel);?></td>
      <td>
-         <a href="<?php echo $this->url('schedulerShow',
+         <a href="<?php echo $this->url('physician',
              array('action'=>'edit', 'id' => $physician->id));?>">Edytuj</a>
-         <a href="<?php echo $this->url('schedulerShow',
+         <a href="<?php echo $this->url('physician',
              array('action'=>'delete', 'id' => $physician->id));?>">Kasuj</a>
      </td>
  </tr>
