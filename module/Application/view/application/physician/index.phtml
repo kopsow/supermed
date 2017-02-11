@@ -1,21 +1,20 @@
 <table class="table">
  <tr>
-     <th>Imię<span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true" name="physician_id"></span></th>
-     <th>Nazwisko<span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true" name="physician_id"></span></th>
-     <th>PESEL</th>
+     <th>Pacjent<span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true" name="physician_id"></span></th>
+     <th>Data wizyty<span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true" name="physician_id"></span></th>
+     <th>Operacje <span class="glyphicon glyphicon-cog" aria-hidden="true"></span></th>
+     
      
  </tr>
- <?php foreach ($physicians as $physician) : ?>
+ <?php foreach ($patients as $patient) : ?>
  <tr>
      
-     <td><?php echo $this->escapeHtml($physician->name);?></td>
-     <td><?php echo $this->escapeHtml($physician->surname);?></td>
-     <td><?php echo $this->escapeHtml($physician->pesel);?></td>
+     <td><?php echo $this->escapeHtml($patient['patient']);?></td>
+     <td><?php echo $this->escapeHtml($patient['visit_date']);?></td>
      <td>
          <a href="<?php echo $this->url('physician',
-             array('action'=>'edit', 'id' => $physician->id));?>">Edytuj</a>
-         <a href="<?php echo $this->url('physician',
-             array('action'=>'delete', 'id' => $physician->id));?>">Kasuj</a>
+             array('action'=>'cancel', 'id' => $patient['id']));?>">Odwołaj</a>
+         
      </td>
  </tr>
  <?php endforeach; ?>

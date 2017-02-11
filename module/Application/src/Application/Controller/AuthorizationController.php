@@ -12,6 +12,7 @@ class AuthorizationController extends AbstractActionController
 {
     
     public $patientTable;
+    public $physicianTable;
    
     public function getPatientTable()
     {
@@ -22,6 +23,14 @@ class AuthorizationController extends AbstractActionController
         return $this->patientTable;
     }
     
+    public function getPhysicianTable()
+    {
+        if (!$this->physicianTable) {
+            $sm = $this->getServiceLocator();
+            $this->physicianTable = $sm->get('Physician\Model\PhysicianTable');
+        }
+        return $this->physicianTable;
+    }
    
     public function __construct() {
         $this->session = new Container('loginData');
@@ -82,7 +91,52 @@ class AuthorizationController extends AbstractActionController
         
         return $view;
     }
-    
+    public function physicianAction()
+    {
+        $this->layout('layout/physician');
+        $message = null ;
+        $request = $this->getRequest();
+        $form = new LoginForm();
+        $form->setAttribute('action', $this->url()->fromRoute('autoryzacja',array('action'=>'physician')));
+        
+        if ($request->isPost())
+        {
+            $email = $request->getPost('login');
+            $pass  = $request->getPost('password');
+           
+            $result = $this->getPhysicianTable()->loginPhysician($email,$pass);
+           
+           
+            if ($result)
+            {
+                $this->session->login=true;
+                $this->session->id           = $result->id;
+                $this->session->name         = $result->name;
+                $this->session->surname      = $result->surname;
+                $this->session->email        = $result->email;
+                $this->session->role         = 'physician';
+                
+               $this->redirect()->toRoute('physician'); 
+                
+            } else {
+                $message = 'Błędny login lub hasło';
+                
+            }
+        }
+        
+        
+        
+        $view = new ViewModel(array(
+            'form'              =>  $form,
+            'loginMessage'      =>  $message,
+            'physicianMessage'  =>  'Logujesz się jako LEKARZ',
+            'mail'         =>  $request->getPost('login')
+        ));
+        $view->setTemplate('application/authorization/login');
+        
+        return $view;
+           
+    }
     public function verifiedAction()
     {
        

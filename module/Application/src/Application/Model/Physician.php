@@ -16,6 +16,7 @@ class Physician
         $this->name         = (isset($data['name']))            ? $data['name']     : null;
         $this->surname      = (isset($data['surname']))         ? $data['surname']  : null;
         $this->pesel        = (isset($data['pesel']))           ? $data['pesel']    : null;
+        $this->email        = (isset($data['email']))           ? $data['email']    : null;
         $this->password     = (isset($data['password']))        ? $data['password'] : null;
         $this->holiday      = (isset($data['holiday']))         ? $data['holiday']  : null;
     }

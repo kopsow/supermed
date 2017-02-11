@@ -72,9 +72,12 @@ class RegistrationController extends AbstractActionController
     
     public function indexAction()
     {
-       if ($this->session->role === 'patient')
+        if ($this->session->role === 'patient')
         {
             $this->layout('layout/patient');
+            $this->layout()->setVariable('registration_active', 'active');
+        }elseif ($this->session->role === 'physician') {
+            $this->layout('layout/physician');
             $this->layout()->setVariable('registration_active', 'active');
         }
         $form = new PhysicianForm();

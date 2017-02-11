@@ -1,1 +1,19 @@
+<h1>Moje hamonogramy</h1>
+<table class="table">
+ <tr>
+     <th>Id</th>
+     <th>Data początku<span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true" name="physician_id"></span></th>
+     <th>Data końca<span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true" name="physician_id"></span></th>
+    
+     
+ </tr>
+ <?php foreach ($schedulers as $schedule) : ?>
+ <tr>
+     <td><?php echo $this->escapeHtml($schedule->id);?></td>
+     <td><?php echo $this->escapeHtml($schedule->date_start);?></td>
+     <td><?php echo $this->escapeHtml($schedule->date_end);?></td>
+     
+ </tr>
+ <?php endforeach; ?>
+ </table>
 

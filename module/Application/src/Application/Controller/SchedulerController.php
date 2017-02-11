@@ -8,9 +8,8 @@ use Zend\View\Model\JsonModel;
 use Application\Form\PhysicianForm;
 use Application\Model\Scheduler;
 use Application\Model\SchedulerTable;
-use Application\Model\Days;
-use Application\Model\DaysTable;
 
+use Zend\Session\Container;
 class SchedulerController extends AbstractActionController
 {
     
@@ -20,7 +19,9 @@ class SchedulerController extends AbstractActionController
     public $daysTable;
     public $session;
     
-    
+    public function __construct() {
+        $this->session = new Container('loginData');
+    }
     public function getPhysicianTable()
     {
         if (!$this->physicianTable) {
@@ -51,7 +52,18 @@ class SchedulerController extends AbstractActionController
     
     public function indexAction()
     {
-        return new ViewModel();
+        
+        if ($this->session->role === 'physician')
+        {
+            $this->layout('layout/physician');
+            $this->layout()->setVariable('scheduler_active', 'active');
+            $scheduler = $this->getSchedulerTable()->getSchedulerPhysician($this->session->id,date('m'));
+        } else  {
+            $this->redirect()->toRoute('authorization');
+        }
+        return new ViewModel(array(
+            'schedulers'    => $scheduler,
+        ));
     }
     
     public function addAction() 

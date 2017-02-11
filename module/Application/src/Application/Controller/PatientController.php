@@ -42,7 +42,28 @@ class PatientController extends AbstractActionController
         {
             $this->layout('layout/patient');
             $this->layout()->setVariable('patient_active', 'active');
+            
+            $result = $this->getRegistrationTable()->showRegistration($this->session->id);
+        
+            return new ViewModel(array(
+                'patients'      =>  $result,
+                'patient_id'    =>  $this->session->id
+
+            ));
+        }elseif($this->session->role === 'physician')
+        {
+            $this->layout('layout/physician');
+            $this->layout()->setVariable('patient_active', 'active');
+            $patients = $this->getPatientTable()->fetchAll();
+            $view = new ViewModel(array(
+                'patients'      =>  $patients,
+            
+            ));
+            $view->setTemplate('application/patient/list');
+        
+        return $view;
         }
+        
         if (!$this->session->id)
         {
             
@@ -50,12 +71,7 @@ class PatientController extends AbstractActionController
         }
             
 
-        $result = $this->getRegistrationTable()->showRegistration($this->session->id);
-        return new ViewModel(array(
-            'patients'      =>  $result,
-            'patient_id'    =>  $this->session->id
-            
-        ));
+        
     }
     
     public function addAction()
@@ -193,7 +209,10 @@ class PatientController extends AbstractActionController
         ->addTo($this->session->email)
         ->setSubject("Odwołanie wizyty");
         $message->setEncoding("UTF-8");
-        $bodyHtml = ("Informujemy, że twoja wizyta w dniu:".$registrationInfo['visit_date']."<br /> Do lekarza: ".$registrationInfo['physician']."<br/> Została przez ciebie odwołana");
+        $bodyHtml = ("Informujemy, że twoja wizyta w dniu:"
+                . "".$registrationInfo['visit_date']."<br />"
+                . " Do lekarza: ".$registrationInfo['physician']."<br/>"
+                . " Została przez ciebie odwołana");
         $htmlPart = new MimePart($bodyHtml);
         $htmlPart->type = "text/html";
         $body = new MimeMessage();

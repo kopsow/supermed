@@ -2,8 +2,13 @@
     <div class="col-md-3 col-md-offset-4">
 <div class="input-group">
     <?php if($this->loginMessage) : ?>
-    <div class="alert alert-danger" style="text-align: center">
-        <?php echo $this->loginMessage?></div>
+        <div class="alert alert-danger" style="text-align: center">
+            <?php echo $this->loginMessage?>
+        </div>
+    <?php elseif ($this->physicianMessage) :?>
+        <div class="alert alert-warning" style="text-align: center">
+            <?php echo $this->physicianMessage?>
+        </div>
     <?php endif; ?>
 <?php
 //$form->setAttribute('action', $this->url('autoryzacja'))->prepare();

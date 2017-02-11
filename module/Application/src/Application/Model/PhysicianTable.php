@@ -35,6 +35,7 @@ class PhysicianTable
             'name'              => $physician->name,
             'surname'           => $physician->surname,
             'pesel'             => $physician->pesel,
+            'email'          =>  $physician->email,
             'password'          => $physician->password,
             'holiday'           => $physician->holiday,
         );
@@ -58,6 +59,7 @@ class PhysicianTable
             'surname'           => $physician->surname,
             'pesel'             => $physician->pesel,
             'password'          => $physician->password,
+            'email'             => $physician->email,
             'holiday'           => $physician->holiday,
         );
         $this->tableGateway->insert($data);
@@ -65,5 +67,26 @@ class PhysicianTable
     public function deletePhysician($id)
     {
         $this->tableGateway->delete(array('id' => $id));
+    }
+    
+    public function lastInsertId() {
+        return $this->tableGateway->lastInsertValue;
+    }
+    
+    public function verifiedPatient($id)
+    {
+        $data = array(
+            'verified'  =>  '1'
+        );
+        $this->tableGateway->update($data, array('id' => $id));
+    }
+    
+    public function loginPhysician($email,$password)
+    {
+        $select = $this->tableGateway->getSql()->select();
+        $select->where('email="'.$email.'"')->where('password="'.$password.'"');
+        $rowset = $this->tableGateway->selectWith($select);
+        
+        return $rowset->current();
     }
 }

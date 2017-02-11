@@ -12,14 +12,23 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
-
+use Zend\Mime\Part as MimePart;
+use Zend\Mime\Message as MimeMessage;
 
 class PhysicianController extends AbstractActionController
 {
     
+
+    
     public $physicianTable;
+    public $patientTable;
     public $holidaysTable;
+    public $registrationTable;
+    public $schedulerTable;
+    
+    
     public function __construct() {
+        
         $this->session = new Container('loginData');
     }
     public function getPhysicianTable()
@@ -30,6 +39,34 @@ class PhysicianController extends AbstractActionController
         }
         return $this->physicianTable;
     }
+    
+    public function getPatientTable()
+    {
+        if (!$this->patientTable) {
+            $sm = $this->getServiceLocator();
+            $this->patientTable = $sm->get('Patient\Model\PatientTable');
+        }
+        return $this->patientTable;
+    }
+    
+    public function getRegistrationTable()
+    {
+        if (!$this->registrationTable) {
+            $sm = $this->getServiceLocator();
+            $this->registrationTable = $sm->get('Registration\Model\RegistrationTable');
+        }
+        return $this->registrationTable;
+    }
+    
+    public function getSchedulerTable()
+    {
+        if (!$this->schedulerTable) {
+            $sm = $this->getServiceLocator();
+            $this->schedulerTable = $sm->get('Scheduler\Model\SchedulerTable');
+        }
+        return $this->schedulerTable;
+    }
+    
     public function getHolidaysTable()
     {
         if (!$this->holidaysTable) {
@@ -41,13 +78,25 @@ class PhysicianController extends AbstractActionController
     
     public function indexAction()
     {
-        echo $this->session->role;
+        $listPatient = null; 
+        
+       if (!$this->session->login)
+       {
+          $this->redirect()->toRoute('autoryzacja',array('action'=>'physician'));
+       } elseif ($this->session->role === 'physician') {
+            $listPatient = $this->getRegistrationTable()->showRegistration(null,null,$this->session->id);
+       }
        if (!$this->session || $this->session->role ==='patient')
        {
            $this->redirect()->toRoute('autoryzacja',array('action'=>'physician'));
        }
+       if ($this->session->role === 'physician')
+       {
+           $this->layout('layout/physician');
+           $this->layout()->setVariable('list_active', 'active');
+       }
         return new ViewModel(array(
-            'physicians' =>  $this->getPhysicianTable()->fetchAll(),
+            'patients' =>  $listPatient,
         ));
     }
     
@@ -87,7 +136,7 @@ class PhysicianController extends AbstractActionController
          }
          echo $id;
     }
-    
+   
     public function editAction()
     {
         $id = (int) $this->params()->fromRoute('id');
@@ -139,6 +188,37 @@ class PhysicianController extends AbstractActionController
                 $this->getPhysicianTable()->savePhysician($physician);
                 $this->redirect()->toRoute('physician');
             } 
+        }
+    }
+    
+    public function cancelAction()
+    {
+        $id = (int) $this->params()->fromRoute('id');
+        
+        if ($this->session->role === 'physician')
+        {
+            $physicianId    =   $this->session->id;
+            
+            $registrationInfo   =   $this->getRegistrationTable()->showRegistration(null,$id,null)->current();
+            $patientInfo        =   $this->getPatientTable()->getPatient($registrationInfo['patient_id']);
+           // $this->getRegistrationTable()->deleteRegistraionPhysician($physicianId,$id);
+            $transport = $this->getServiceLocator()->get('mail.transport');
+            $message = new \Zend\Mail\Message();       
+            $message->addFrom("rejestracja@super-med.pl", "Super-Med")
+            ->addTo($patientInfo->email)
+            ->setSubject("Odwołanie wizyty");
+            $message->setEncoding("UTF-8");
+            $bodyHtml = ("Informujemy, że twoja wizyta w dniu:"
+                    . "".$registrationInfo['visit_date']."<br />"
+                    . " Do lekarza: ".$registrationInfo['physician'].""
+                    . "<br/> Została odwołana przez lekarza");
+            $htmlPart = new MimePart($bodyHtml);
+            $htmlPart->type = "text/html";
+            $body = new MimeMessage();
+            $body->setParts(array($htmlPart));
+            $message->setBody($body);
+            $transport->send($message);
+            $this->redirect()->toRoute('physician');
         }
     }
 }

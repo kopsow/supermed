@@ -40,6 +40,17 @@ class RegistrationTable {
         }
         return $row;
     }
+    
+     public function getRegistrationPhysician($id_physician)
+    {
+       $id  = (int) $id_physician;
+        $rowset = $this->tableGateway->select(array('physician_id' => $id));
+        $row = $rowset->current();
+        if (!$row) {
+            throw new \Exception("Could not find row $id");
+        }
+        return $row;
+    }
     public function getRegistrationScheduler($id)
     {
           $id  = (int) $id;
@@ -87,11 +98,27 @@ class RegistrationTable {
         );
         $this->tableGateway->insert($data);
     }
+    /**
+     * Funkcja usuwa rejestrację o podanym numrze id
+     * 
+     * @param type $id
+     */
     public function deleteRegistration($id)
     {
         $this->tableGateway->delete(array('id' => $id));
     }
     
+    /**
+     * Funkcja usuwa rejestracje o podanym numerze id oraz o passujacym id lekarza
+     * @param type $physicianId
+     * @param type $registrationId
+     */
+    public function deleteRegistrationPhysician($physicianId,$registrationId)
+    {
+          $this->tableGateway->delete(array('id' => $registrationId,'physician_id'=>$physicianId));
+    }
+    
+    //usuwanie rejestracji przez pacjenta
     public function deleteRegistrationPatient($patientId,$registrationId)
     {
         $this->tableGateway->delete(array('id' => $registrationId,'patient_id'=>$patientId));
@@ -146,20 +173,35 @@ class RegistrationTable {
         return $resultSet;
     }
     
-    public function showRegistration($patient_id,$registration_id = null)
+    public function showRegistration($patient_id = null,$registration_id = null,$physician_id = null)
     {
         $statmentSql = $this->tableGateway->getSql()->select();
         $statmentSql->columns(array('*'));        
         $statmentSql->join('physician', 'registration.physician_id = physician.id',array('physician'=>new \Zend\Db\Sql\Expression('CONCAT(physician.name," ",physician.surname)')),'left');
         $statmentSql->join('patient', 'registration.patient_id = patient.id',array('patient'=>new \Zend\Db\Sql\Expression('CONCAT(patient.name," ",patient.surname)')),'left');
         
-            $statmentSql->where(array('patient.id'    =>  $patient_id,
+            if ($patient_id)
+            {
+                $statmentSql->where(array('patient.id'    =>  $patient_id,
                 ));
+            } elseif ($registration_id) {
+                $statmentSql->where(array(
+                     'registration.id'  =>  $registration_id
+                ));
+               
+            }
+            
+            if ($physician_id)
+            {
+                $statmentSql->where(array('physician.id'    =>  $physician_id,
+                ));
+               
+            }
             
             if ($registration_id)
             {
-                 $statmentSql->where(array('patient.id'    =>  $patient_id,
-                     'registration.id'  =>  $registration_id
+                
+                $statmentSql->where(array('registration.id'  =>  $registration_id
                 ));
             }
             
