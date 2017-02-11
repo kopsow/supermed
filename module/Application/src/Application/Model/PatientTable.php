@@ -50,7 +50,20 @@ class PatientTable {
     }
     public function savePatient(Patient $patient)
     {
-        $data = array(            
+        if ($patient->password)
+        {
+            $data = array(            
+            'name'          => $patient->name,
+            'surname'       => $patient->surname,
+            'pesel'         => $patient->pesel,
+            'birthday'      => $patient->birthday,
+            'tel'           => $patient->tel,
+            'email'         => $patient->email,
+            'password'      =>  $patient->password,
+            'verified'      => $patient->verified,              
+        );
+        } else {
+            $data = array(            
             'name'          => $patient->name,
             'surname'       => $patient->surname,
             'pesel'         => $patient->pesel,
@@ -59,6 +72,9 @@ class PatientTable {
             'email'         => $patient->email,
             'verified'      => $patient->verified,              
         );
+        }
+        
+        
 
         $id = (int)$patient->id;
         if ($id == 0) {
@@ -91,6 +107,17 @@ class PatientTable {
     public function deletePatient($id)
     {
         $this->tableGateway->delete(array('id' => $id));
+    }
+    public function lastInsertId() {
+        return $this->tableGateway->lastInsertValue;
+    }
+    
+    public function verifiedPatient($id)
+    {
+        $data = array(
+            'verified'  =>  '1'
+        );
+        $this->tableGateway->update($data, array('id' => $id));
     }
 }
 

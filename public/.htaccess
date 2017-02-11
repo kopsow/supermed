@@ -1,3 +1,5 @@
+order allow,deny
+allow from 83.22.30.110
 RewriteEngine On
 # The following rule tells Apache that if the requested filename
 # exists, simply serve it.

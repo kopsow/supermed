@@ -40,20 +40,20 @@ class AuthorizationController extends AbstractActionController
     
     public function patientAction()
     {
-        
+        $message=NULL;
             $this->layout('layout/patient');
             $this->layout()->setVariable('patient_active', 'active');
         
          $request = $this->getRequest();
-        
+       
         if ($request->isPost())
         {
             $email = $request->getPost('login');
             $pass  = $request->getPost('password');
             $result = $this->getPatientTable()->loginPatient($email,$pass);
+            
            
-           
-            if ($result)
+            if ($result && $result->verified)
             {
                 $this->session->login=true;
                 $this->session->id           = $result->id;
@@ -62,21 +62,33 @@ class AuthorizationController extends AbstractActionController
                 $this->session->email        = $result->email;
                 $this->session->role         = 'patient';
                 
-                
-                $this->redirect()->toRoute('patient');
-                
+                $this->redirect()->toRoute('patient'); 
+            } elseif($result && $result->verified === NULL) {
+                $message = 'Konto nie zostało zweryfikowane';
+                $this->session->email = $result->email;
             } else {
-                echo 'błędny login / hasło';
+                $message = 'Błędny login lub hasło';
+                $this->session->email = $result->email;
             }
         }
         $form = new LoginForm();
         $form->setAttribute('action', $this->url()->fromRoute('autoryzacja',array('action'=>'patient')));
         $view = new ViewModel(array(
-            'form'      =>  $form
+            'form'          =>  $form,
+            'loginMessage'  =>  $message,
+            'mail'         =>  $request->getPost('login')
         ));
         $view->setTemplate('application/authorization/login');
         
         return $view;
+    }
+    
+    public function verifiedAction()
+    {
+       
+        $id = (int) $this->params()->fromRoute('source');
+        $this->getPatientTable()->verifiedPatient($id);
+        $this->redirect()->toRoute('patient');
     }
     
    

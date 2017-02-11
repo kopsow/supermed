@@ -36,12 +36,12 @@ class RegistrationForm extends Form {
         ));
         
         $this->add(array(
-                'type'      =>  'text',
-                'name'      =>  'name',
+                'type'      =>  'date',
+                'name'      =>  'birthday',
                 
                 'attributes'=>  array(
                     'class'         =>  'form-control',
-                    'placeholder'   =>  'Podaj imię'
+                    'placeholder'   =>  'Data urodzenia'
                 )
         ));
         

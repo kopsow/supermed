@@ -5,6 +5,7 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Form\PatientForm;
+use Application\Form\RegistrationForm;
 use Application\Model\Patient;
 use Zend\Session\Container;
 use Zend\Mime\Part as MimePart;
@@ -202,6 +203,62 @@ class PatientController extends AbstractActionController
         $this->redirect()->toRoute('patient');
     }
     
+    public function newAction()
+    {
+        $form = new RegistrationForm();
+        $request = $this->getRequest();
+        
+        if ($request->isPost())
+        {
+            $data = array(
+                'name'      =>  $request->getPost('name'),
+                'surname'   =>  $request->getPost('surname'),
+                'birthday'  =>  $request->getPost('birthday'),
+                'tel'       =>  $request->getPost('tel'),
+                'email'     =>  $request->getPost('email'),
+                'pesel'     =>  $request->getPost('pesel'),
+                'password'  =>  $request->getPost('password'),
+            );
+            
+            $patient = new Patient();
+            $email = $request->getPost('email');
+            $patient->exchangeArray($data);
+            $this->getPatientTable()->savePatient($patient);
+            $patientId = $this->getPatientTable()->lastInsertId();
+            $body = "Witam!<br />"
+                    . "Właśnie zostało utwozone nowe konto pacjenta na stronie super-med.pl <br />"
+                    . "W celu aktywacji konta prosimy kliknąć w poniższy link <br />"
+                    . "<a href='www.super-med.pl/autoryzacja/verified/$patientId'>Link do aktywacji konta</a>";
+            $subject="Utworzono nowe konto w serwisie Supe-Med";
+            $this->sendMail($email, $body,$subject);
+            $this->redirect()->toRoute('patient');
+        }
+        
+        
+
+        return new ViewModel(array(
+            'form'              =>  $form
+        ));
+    }
+    
+  
+    private function sendMail($To,$Body,$Subject)
+    {
+        $transport = $this->getServiceLocator()->get('mail.transport');
+         $message = new \Zend\Mail\Message();       
+         $message->addFrom("rejestracja@super-med.pl", "Super-Med")
+         ->addTo($To)
+         ->setSubject($Subject);
+         $message->setEncoding("UTF-8");
+         $bodyHtml = ($Body);
+         $htmlPart = new MimePart($bodyHtml);
+         $htmlPart->type = "text/html";
+         $body = new MimeMessage();
+         $body->setParts(array($htmlPart));
+         $message->setBody($body);
+         $transport->send($message);
+    }
+   
    
 }
 

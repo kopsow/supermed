@@ -30,7 +30,16 @@ return array(
                     ),
                 ),
             ),
-            
+            'verified' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route'    => '/autoryzacja/verified[/:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Authorization',
+                        'action'     => 'verified',
+                    ),
+                ),
+            ),
             'scheduler' => array(
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
