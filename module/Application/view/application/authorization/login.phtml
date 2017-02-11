@@ -1,0 +1,28 @@
+<div class="row">
+    <div class="col-md-3 col-md-offset-4">
+<div class="input-group">
+<?php
+//$form->setAttribute('action', $this->url('autoryzacja'))->prepare();
+echo $this->form()->openTag($form);
+echo $this->formRow($form->get('login'));
+echo $this->formRow($form->get('password'));
+
+echo $this->form()->closeTag($form);
+
+
+
+?>
+    <div class="btn btn-success center-block">Zaloguj</div>
+</div>
+        <a href="<?php echo $this->url('patient',array('action'=>'new'))?>" style="text-align: center;display:block;padding-top:0.5em">Nie masz konta? </a>
+</div>
+    </div>
+
+<script>
+$(document).ready(function() {
+    $('.btn').click(function(){
+        
+        $('form').submit();
+    });
+});
+</script>

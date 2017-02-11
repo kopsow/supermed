@@ -1,27 +1,18 @@
-
 <table class="table">
     <tr>
-        <th>Imię</th>
-        <th>Nazwisko</th>
-        <th>PESEL</th>
-        <th>Data urodzenia</th>
-        <th>Telefon</th>
-        <th>Email</th>
+        <th>Lekarz</th>        
+        <th>Data wizyty</th>       
         <th>Operacje</th>
     </tr>
     <?php foreach ($patients as $patient) : ?>
     <tr>
-        <td><?php echo $this->escapeHtml($patient->name) ;?></td>
-        <td><?php echo $this->escapeHtml($patient->surname) ;?></td>
-        <td><?php echo $this->escapeHtml($patient->pesel) ;?></td>
-        <td><?php echo $this->escapeHtml($patient->birthday) ;?></td>
-        <td><?php echo $this->escapeHtml($patient->tel) ;?></td>
-        <td><?php echo $this->escapeHtml($patient->email) ;?></td>
+        <td><?php echo $this->escapeHtml($patient['physician']) ;?></td>
+        <td><?php echo $this->escapeHtml($patient['visit_date']) ;?></td>
+        
         <td>
          <a href="<?php echo $this->url('patient',
-             array('action'=>'edit', 'id' => $patient->id));?>">Edytuj</a>
-         <a href="<?php echo $this->url('patient',
-             array('action'=>'delete', 'id' => $patient->id));?>">Kasuj</a>
+             array('action'=>'cancel', 'id' => $patient['id']));?>">Odwołaj</a>
+         
      </td>
     </tr>
     <?php endforeach; ?>

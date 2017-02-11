@@ -115,7 +115,7 @@ return array(
             'autoryzacja' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route'    => '/autoryzacja[/:action]',
+                    'route'    => '/autoryzacja[/:action][/:source]',
                     'defaults' => array(
                         'controller' => 'Application\Controller\Authorization',
                         'action'     => 'login',

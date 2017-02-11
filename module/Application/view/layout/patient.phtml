@@ -1,4 +1,7 @@
-<?php echo $this->doctype(); ?>
+<?php echo $this->doctype(); 
+$this->session = new \Zend\Session\Container('loginData');
+
+?>
 
 <html lang="en">
     <head>
@@ -39,10 +42,13 @@
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Home') ?></a></li>
-                        <li><a href="<?php echo $this->url('patient') ?>">Strefa pacjenta</a></li>
-                        <li><a href="<?php echo $this->url('physician') ?>">Strefa lekarza</a></li>
-                        <li><a href="<?php echo $this->url('patient') ?>">Strefa rejestrtorki</a></li>
+                    <li <?php ($this->url() == '/') ? print_r('class="active"') : ""; ?>>
+                        <a href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Home') ?></a></li>
+                    <li class="<?php echo $this->patient_active; ?>">
+                        <a href="<?php echo $this->url('patient') ?>">Moje wizyty</a></li>
+                    <li class="<?php echo $this->registration_active; ?>">
+                        <a href="<?php echo $this->url('registration') ?>">Zapisz na wizytę</a></li>
+                    <li class="<?php echo $this->edit_active; ?>"><a href="<?php echo $this->url('patient',array('action'=>'edit')) ?>">Edycja danych</a></li>
 
                     </ul>
                 </div><!--/.nav-collapse -->
@@ -55,7 +61,7 @@
            if (!$this->session->login) : ?>
             <p><a href="<?php echo $this->url('autoryzacja')?>">Zaloguj się</a></p>
              <?php else : ?>   
-            <p>Witaj <?php echo $this->session->name." ".$this->session->surname?><a href="<?php echo $this->url('autoryzacja',array('action'=>'logout'))?>"> Wyloguj</a></p>
+            <p>Witaj <?php echo $this->session->name?><a href="<?php echo $this->url('autoryzacja',array('action'=>'logout'))?>"> Wyloguj</a></p>
              <?php endif; ?>
             </div>
             
@@ -69,3 +75,4 @@
         <?php echo $this->inlineScript() ?>
     </body>
 </html>
+

@@ -13,6 +13,7 @@ use Application\Model\RegistrationTable;
 
 use Zend\Mail\Message;
 use Zend\Mime;
+use Zend\Session\Container;
 
 class RegistrationController extends AbstractActionController
 {
@@ -21,7 +22,10 @@ class RegistrationController extends AbstractActionController
     public $registrationTable;
     public $physicianTable;
     public $patientTable;
-    
+    public function __construct() {
+        $this->session = new Container('loginData');
+        
+    }
     public function getSchedulerTable()
     {
         if (!$this->schedulerTable) {
@@ -68,7 +72,11 @@ class RegistrationController extends AbstractActionController
     
     public function indexAction()
     {
-       
+       if ($this->session->role === 'patient')
+        {
+            $this->layout('layout/patient');
+            $this->layout()->setVariable('registration_active', 'active');
+        }
         $form = new PhysicianForm();
         $formPatient = new PatientForm();
         return new ViewModel(array(

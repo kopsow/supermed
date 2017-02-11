@@ -40,14 +40,20 @@ class PatientTable {
         }
         return $row;
     }
-
+    public function loginPatient($email,$password)
+    {
+        $select = $this->tableGateway->getSql()->select();
+        $select->where('email="'.$email.'"')->where('password="'.$password.'"');
+        $rowset = $this->tableGateway->selectWith($select);
+        
+        return $rowset->current();
+    }
     public function savePatient(Patient $patient)
     {
         $data = array(            
             'name'          => $patient->name,
             'surname'       => $patient->surname,
             'pesel'         => $patient->pesel,
-            'password'      => $patient->password,
             'birthday'      => $patient->birthday,
             'tel'           => $patient->tel,
             'email'         => $patient->email,

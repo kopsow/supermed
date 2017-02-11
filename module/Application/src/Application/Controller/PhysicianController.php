@@ -11,7 +11,7 @@ namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-
+use Zend\Session\Container;
 
 
 class PhysicianController extends AbstractActionController
@@ -19,7 +19,9 @@ class PhysicianController extends AbstractActionController
     
     public $physicianTable;
     public $holidaysTable;
-    
+    public function __construct() {
+        $this->session = new Container('loginData');
+    }
     public function getPhysicianTable()
     {
         if (!$this->physicianTable) {
@@ -39,8 +41,11 @@ class PhysicianController extends AbstractActionController
     
     public function indexAction()
     {
-        
-       
+        echo $this->session->role;
+       if (!$this->session || $this->session->role ==='patient')
+       {
+           $this->redirect()->toRoute('autoryzacja',array('action'=>'physician'));
+       }
         return new ViewModel(array(
             'physicians' =>  $this->getPhysicianTable()->fetchAll(),
         ));

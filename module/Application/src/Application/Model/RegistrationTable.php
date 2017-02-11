@@ -30,7 +30,16 @@ class RegistrationTable {
         }
         return $row;
     }
-    
+    public function getRegistrationPatient($id_patient)
+    {
+       $id  = (int) $id_patient;
+        $rowset = $this->tableGateway->select(array('patient_id' => $id));
+        $row = $rowset->current();
+        if (!$row) {
+            throw new \Exception("Could not find row $id");
+        }
+        return $row;
+    }
     public function getRegistrationScheduler($id)
     {
           $id  = (int) $id;
@@ -83,6 +92,11 @@ class RegistrationTable {
         $this->tableGateway->delete(array('id' => $id));
     }
     
+    public function deleteRegistrationPatient($patientId,$registrationId)
+    {
+        $this->tableGateway->delete(array('id' => $registrationId,'patient_id'=>$patientId));
+    }
+    
     public function busyHours($physician_id,$visit_date)
     {
          $select = $this->tableGateway->getSql()->select();
@@ -127,6 +141,28 @@ class RegistrationTable {
                 'physician.id'  =>  $physician_id
             ));
         }
+        $statementResult = $this->tableGateway->getSql()->prepareStatementForSqlObject($statmentSql);
+        $resultSet = $statementResult->execute();
+        return $resultSet;
+    }
+    
+    public function showRegistration($patient_id,$registration_id = null)
+    {
+        $statmentSql = $this->tableGateway->getSql()->select();
+        $statmentSql->columns(array('*'));        
+        $statmentSql->join('physician', 'registration.physician_id = physician.id',array('physician'=>new \Zend\Db\Sql\Expression('CONCAT(physician.name," ",physician.surname)')),'left');
+        $statmentSql->join('patient', 'registration.patient_id = patient.id',array('patient'=>new \Zend\Db\Sql\Expression('CONCAT(patient.name," ",patient.surname)')),'left');
+        
+            $statmentSql->where(array('patient.id'    =>  $patient_id,
+                ));
+            
+            if ($registration_id)
+            {
+                 $statmentSql->where(array('patient.id'    =>  $patient_id,
+                     'registration.id'  =>  $registration_id
+                ));
+            }
+            
         $statementResult = $this->tableGateway->getSql()->prepareStatementForSqlObject($statmentSql);
         $resultSet = $statementResult->execute();
         return $resultSet;

@@ -13,9 +13,13 @@ use Application\Model\DaysTable;
 
 class SchedulerController extends AbstractActionController
 {
+    
+    
     public $physicianTable;
     public $schedulerTable;
     public $daysTable;
+    public $session;
+    
     
     public function getPhysicianTable()
     {

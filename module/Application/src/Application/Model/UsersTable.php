@@ -29,6 +29,15 @@ class UsersTable {
         return $row;
     }
     
+    public function loginUsers($email,$password)
+    {   
+        $select = $this->tableGateway->getSql()->select();
+        $select->where('email="'.$email.'"')->where('password="'.$password.'"');
+        $rowset = $this->tableGateway->selectWith($select);
+        
+        return $rowset->current();
+    }
+    
     public function addUsers(Users $users)
     {
         
