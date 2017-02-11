@@ -84,7 +84,7 @@ return array(
             'registration' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route'    => '/rejestracja[/:action]',
+                    'route'    => '/rejestracja[/:action][/:param]',
                     'defaults' => array(
                         'controller' => 'Application\Controller\Registration',
                         'action'     => 'index',
@@ -111,6 +111,7 @@ return array(
                     ),
                 ),
             ),
+            
             'administrator' => array(
                 'type' => 'segment',
                 'options' => array(

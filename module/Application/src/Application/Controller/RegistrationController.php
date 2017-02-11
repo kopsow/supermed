@@ -7,12 +7,12 @@ use Zend\View\Model\ViewModel;
 use Application\Form\PhysicianForm;
 use Application\Form\PatientForm;
 use Zend\Db\Adapter\Adapter;
-
+use Zend\Mime\Part as MimePart;
+use Zend\Mime\Message as MimeMessage;
 use Application\Model\Registration;
 use Application\Model\RegistrationTable;
 
-use Zend\Mail\Message;
-use Zend\Mime;
+
 use Zend\Session\Container;
 
 class RegistrationController extends AbstractActionController
@@ -72,6 +72,7 @@ class RegistrationController extends AbstractActionController
     
     public function indexAction()
     {
+        $request = $this->getRequest();
         if ($this->session->role === 'patient')
         {
             $this->layout('layout/patient');
@@ -83,16 +84,49 @@ class RegistrationController extends AbstractActionController
         {
             $this->layout('layout/register');
             $this->layout()->setVariable('registration_active', 'active');
-        }
+        }        
+        
+        if($request->isPost())
+        {
+           
+           $id = (int) $request->getPost('id');
+           
+           
+           if ($id)
+           {
+               $result = $this->getSchedulerTable()->getSchedulerPhysician($id,date('m'));
+               
+               $view = new ViewModel(array(
+                   'dni'    =>  $result,
+                   'id'     =>  $id
+               ));
+           }
+            
+            
+        } else {            
+                
         $form = new PhysicianForm();
         $formPatient = new PatientForm();
-        return new ViewModel(array(
+        
+         $view = new ViewModel(array(
             'physicians' => $form,
             'patient'    => $formPatient,
             'lekarze'    => $this->getPhysicianTable()->fetchAll(),
             'dni'  => $this->getSchedulerTable()->fetchAll(),
             'godziny'  => $this->getSchedulerTable()->fetchAll(),
         ));
+        }        
+        /*return new ViewModel(array(
+            'physicians' => $form,
+            'patient'    => $formPatient,
+            'lekarze'    => $this->getPhysicianTable()->fetchAll(),
+            'dni'  => $this->getSchedulerTable()->fetchAll(),
+            'godziny'  => $this->getSchedulerTable()->fetchAll(),
+        ));*/
+        
+         
+         return $view;
+        
     }
     
     public function addAction()
@@ -110,9 +144,7 @@ class RegistrationController extends AbstractActionController
             );
             $registration->exchangeArray($data);
             $this->getRegistrationTable()->saveRegistration($registration);
-            echo '<pre>';
-            var_dump($data);
-            echo '</pre>';
+
             $this->redirect()->toRoute('registration');
         } else {
             $this->redirect()->toRoute('registration');
@@ -205,21 +237,108 @@ class RegistrationController extends AbstractActionController
         return '';
     }
     
-    
-    public function stepOneAction()
+    public function oneAction()
     {
-        $request = $this->request;
+        $this->layout('layout/patient');
+        $this->layout()->setVariable('registration_active', 'active');
         
-        if ($request->isPost())
-        {
+        $id = (int) $this->params()->fromRoute('param');
+        $this->session->idPhysician = $id;
+        $resultDay = $this->getSchedulerTable()->getSchedulerPhysician($id,date('m'));
+        
+        return new ViewModel(array(
+            'days'  =>  $resultDay
+        ));
+    }
+    
+    public function twoAction()
+    {
+        $this->layout('layout/patient');
+        $this->layout()->setVariable('registration_active', 'active');
             
-        } else {
-            $this->redirect()->toRoute('registration');
-        }
+        $day = $this->params()->fromRoute('param');
+        $this->session->visit_date = $day;
+        
+            $physicianId = $this->session->idPhysician;
+            $visitDate = trim($this->session->visit_date);
+            $result = $this->getSchedulerTable()->getSchedulerPhysicianHours($physicianId,$visitDate);
+           
+            $time_start = date('H:i',  strtotime($result->date_start));
+            $time_end = date('H:i',  strtotime($result->date_end));
+
+            $godzinyPrzyjec = array();
+            $godzinyPrzyjec[]=$time_start;
+
+            while ($time_start != $time_end)
+            {
+               $time_start = date('H:i',  strtotime($time_start.'+15 minutes'));
+               $godzinyPrzyjec[]=$time_start;
+            }
+            $busyHours = $this->getRegistrationTable()->busyHours($physicianId,$visitDate);
+            $busy = array();
+            foreach ($busyHours as $hour)
+            {
+                $busy[]=date('H:i',  strtotime($hour->visit_date));
+            }
+            return new ViewModel(array(
+               'physician'     =>  $this->getPhysicianTable()->getPhysician($this->session->idPhysician),
+               'day'           =>  $this->session->visit_date,
+               'hours'         =>  $godzinyPrzyjec ,
+               'busy'          => $busy
+            ));
     }
        
-   
+    public function threeAction()
+    {
+        $this->layout('layout/patient');
+        $this->layout()->setVariable('registration_active', 'active');
+        
+        $patientId      =   $this->session->id;
+        $physicianId    =   $this->session->idPhysician;
+        $visit_date     =   $this->session->visit_date;
+        $visit_time     =   $this->params()->fromRoute('param');
+        
+        $data = array (
+            'patient_id'        =>  $patientId,
+            'physician_id'      =>  $physicianId,
+            'visit_date'        =>  date('Y-m-d H:i:s',strtotime($visit_date." ".$visit_time)),
+            'registration_date' =>  date('Y-m-d H:s'),
+        );
   
+        $physicianInfo = $this->getPhysicianTable()->getPhysician($physicianId);
+        echo '<pre>';
+        var_dump($data);
+        echo '</pre>';
+        $registration = new Registration();
+        $registration->exchangeArray($data);
+        $this->getRegistrationTable()->saveRegistration($registration);
+        $body = 'Witaj! '.$this->session->name.'<br/>'
+                . 'Potwierdzamy dokonanie rezerwacji do <br/>'
+                . 'Lekarza: '.$physicianInfo->name." ".$physicianInfo->surname.'<br />'
+                . 'W dniu: '.$visit_date.'<br />'
+                . 'Na godzinę: '.$visit_time;
+        $this->sendMail($this->session->email, 'Rejestracja wizyty', $body);
+        $this->redirect()->toRoute('patient');
+        
+    }
+  
+    private function sendMail($to,$subject,$body)
+    {
+        $transport = $this->getServiceLocator()->get('mail.transport');
+        $message = new \Zend\Mail\Message();       
+        $message->addFrom("rejestracja@super-med.pl", "Super-Med")
+        ->addTo($to)
+        ->setSubject($subject);
+        $message->setEncoding("UTF-8");
+        $bodyHtml = ($body);
+        $htmlPart = new MimePart($bodyHtml);
+        $htmlPart->type = "text/html";
+        $body = new MimeMessage();
+        $body->setParts(array($htmlPart));
+        $message->setBody($body);
+        $transport->send($message);
+        $this->redirect()->toRoute('patient');
+    }
 }
 
 
