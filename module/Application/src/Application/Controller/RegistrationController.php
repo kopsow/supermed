@@ -79,6 +79,10 @@ class RegistrationController extends AbstractActionController
         }elseif ($this->session->role === 'physician') {
             $this->layout('layout/physician');
             $this->layout()->setVariable('registration_active', 'active');
+        }elseif ($this->session->role === 'register')
+        {
+            $this->layout('layout/register');
+            $this->layout()->setVariable('registration_active', 'active');
         }
         $form = new PhysicianForm();
         $formPatient = new PatientForm();
@@ -121,7 +125,13 @@ class RegistrationController extends AbstractActionController
         $request = $this->getRequest();
         $patientForm = new PatientForm();
         $physicianForm = new PhysicianForm();
-        
+        if ($this->session->role != 'register' && $this->session->role != 'admin')
+        {
+            $this->redirect()->toRoute('home');
+        } elseif ($this->session->role === 'register') {
+           $this->layout('layout/register');
+           $this->layout()->setVariable('registrationList_active', 'active');
+        }
         if ($request->isPost())
         {
             $patientId = $request->getPost('patientId');
@@ -148,9 +158,7 @@ class RegistrationController extends AbstractActionController
     
     public function cancelAction()
     {
-        
-        
-       $id = (int) $this->params()->fromRoute('id', 0);
+        $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
              return $this->redirect()->toRoute('registration');
          } else {

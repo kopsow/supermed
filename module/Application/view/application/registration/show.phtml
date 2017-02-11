@@ -19,9 +19,15 @@
         <td><?php echo $this->escapeHtml($val['visit_date']);?></td>
         <td><?php echo $this->escapeHtml($val['registration_date']);?></td>
         <td>
+            <?php $this->session = new \Zend\Session\Container('loginData');?>
+            
+            <?php if($this->session->role === 'register') :?>
+            <a href="<?php echo $this->url('register',
+             array('action'=>'cancel', 'id' => $val['id']));?>">Odwołaj</a>
+            <?php else :?>
             <a href="<?php echo $this->url('registrationShow',
              array('action'=>'cancel', 'id' => $val['id']));?>">Odwołaj</a>
-         
+            <?php endif;?>
      </td>
     </tr>
     <?php endforeach; ?>

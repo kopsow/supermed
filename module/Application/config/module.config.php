@@ -131,6 +131,16 @@ return array(
                     ),
                 ),
             ),
+            'register' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route'    => '/rejestratorka[/:action][/:id]',
+                    'defaults' => array(
+                        'controller' => 'Application\Controller\Register',
+                        'action'     => 'index',
+                    ),
+                ),
+            ),
             'ajax' => array(
                 'type' => 'segment',
                 'options' => array(
@@ -214,6 +224,7 @@ return array(
             'Application\Controller\Registration' => 'Application\Controller\RegistrationController',
             'Application\Controller\Administrator' => 'Application\Controller\AdministratorController',
             'Application\Controller\Authorization' => 'Application\Controller\AuthorizationController',
+            'Application\Controller\Register' => 'Application\Controller\RegisterController',
             'Application\Controller\Test' => 'Application\Controller\TestController',
         ),
     ),

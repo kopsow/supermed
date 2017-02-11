@@ -63,6 +63,19 @@ class PatientController extends AbstractActionController
         
         return $view;
         }
+        elseif ($this->session->role === 'register')
+        {
+            $this->layout('layout/register');
+            $this->layout()->setVariable('patient_active', 'active');
+            $patients = $this->getPatientTable()->fetchAll();
+            $view = new ViewModel(array(
+                'patients'      =>  $patients,
+                'session'       =>  $this->session
+            
+            ));
+            $view->setTemplate('application/patient/list'); 
+            return $view;
+        }
         
         if (!$this->session->id)
         {

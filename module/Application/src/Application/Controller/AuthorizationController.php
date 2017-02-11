@@ -13,6 +13,7 @@ class AuthorizationController extends AbstractActionController
     
     public $patientTable;
     public $physicianTable;
+    public $usersTable;
    
     public function getPatientTable()
     {
@@ -21,6 +22,15 @@ class AuthorizationController extends AbstractActionController
             $this->patientTable = $sm->get('Patient\Model\PatientTable');
         }
         return $this->patientTable;
+    }
+    
+    public function getUsersTable()
+    {
+        if (!$this->usersTable) {
+            $sm = $this->getServiceLocator();
+            $this->usersTable = $sm->get('Users\Model\UsersTable');
+        }
+        return $this->usersTable;
     }
     
     public function getPhysicianTable()
@@ -77,7 +87,7 @@ class AuthorizationController extends AbstractActionController
                 $this->session->email = $result->email;
             } else {
                 $message = 'Błędny login lub hasło';
-                $this->session->email = $result->email;
+                
             }
         }
         $form = new LoginForm();
@@ -85,6 +95,50 @@ class AuthorizationController extends AbstractActionController
         $view = new ViewModel(array(
             'form'          =>  $form,
             'loginMessage'  =>  $message,
+            'mail'         =>  $request->getPost('login')
+        ));
+        $view->setTemplate('application/authorization/login');
+        
+        return $view;
+    }
+    
+    public function registerAction()
+    {
+        $this->layout('layout/register');
+        $message = null ;
+        $request = $this->getRequest();
+        $form = new LoginForm();
+        $form->setAttribute('action', $this->url()->fromRoute('autoryzacja',array('action'=>'register')));
+        
+        if ($request->isPost())
+        {
+            $email = $request->getPost('login');
+            $pass  = $request->getPost('password');
+           
+            $result = $this->getUsersTable()->loginUsers($email,$pass);
+           
+           
+            if ($result)
+            {
+                $this->session->login=true;
+                $this->session->id           = $result->id;
+                $this->session->name         = $result->name;
+                $this->session->surname      = $result->surname;
+                $this->session->email        = $result->email;
+                $this->session->role         = 'register';
+                
+               $this->redirect()->toRoute('register'); 
+                
+            } else {
+                $message = 'Błędny login lub hasło';
+                
+            }
+        }
+        
+        $view = new ViewModel(array(
+            'form'              =>  $form,
+            'loginMessage'      =>  $message,
+            'physicianMessage'  =>  'Logujesz się jako REJESTRATOR/KA',
             'mail'         =>  $request->getPost('login')
         ));
         $view->setTemplate('application/authorization/login');
