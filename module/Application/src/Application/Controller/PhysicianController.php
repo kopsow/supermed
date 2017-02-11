@@ -201,7 +201,7 @@ class PhysicianController extends AbstractActionController
             
             $registrationInfo   =   $this->getRegistrationTable()->showRegistration(null,$id,null)->current();
             $patientInfo        =   $this->getPatientTable()->getPatient($registrationInfo['patient_id']);
-           // $this->getRegistrationTable()->deleteRegistraionPhysician($physicianId,$id);
+            $this->getRegistrationTable()->deleteRegistraionPhysician($physicianId,$id);
             $transport = $this->getServiceLocator()->get('mail.transport');
             $message = new \Zend\Mail\Message();       
             $message->addFrom("rejestracja@super-med.pl", "Super-Med")
