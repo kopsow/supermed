@@ -290,6 +290,15 @@ class PatientController extends AbstractActionController
          $message->setBody($body);
          $transport->send($message);
     }
+    
+    public function rememberAction()
+    {
+        $form = new Application\Form\RememberForm();
+        
+        return new ViewModel(array(
+            'form'  =>  $form
+        ));
+    }
    
    
 }

@@ -128,7 +128,7 @@ return array(
                     'route'    => '/autoryzacja[/:action][/:source]',
                     'defaults' => array(
                         'controller' => 'Application\Controller\Authorization',
-                        'action'     => 'login',
+                        'action'     => 'patient',
                     ),
                 ),
             ),

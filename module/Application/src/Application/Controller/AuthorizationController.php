@@ -45,10 +45,7 @@ class AuthorizationController extends AbstractActionController
     public function __construct() {
         $this->session = new Container('loginData');
     }
-    public function loginAction()
-    {       
-     
-    }
+    
     
     public function logoutAction()
     {

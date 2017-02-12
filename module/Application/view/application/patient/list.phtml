@@ -13,7 +13,7 @@
         
         <td>
          <a href="<?php echo $this->url('registration',
-             array('action'=>'add', 'id' => $patient->id));?>">Zapisz na wizytę</a>
+             array('action'=>'one', 'param' => $patient->id));?>">Zapisz na wizytę</a>
          <?php if($this->session && $this->session->role === 'register') :?>
            <a href="<?php echo $this->url('patient',
              array('action'=>'edit', 'id' => $patient->id));?>">Edytuj</a>       

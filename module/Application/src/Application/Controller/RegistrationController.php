@@ -73,13 +73,20 @@ class RegistrationController extends AbstractActionController
     public function indexAction()
     {
         $request = $this->getRequest();
+        $patient = null;
+        $physicians = null;
+        
         if ($this->session->role === 'patient')
         {
             $this->layout('layout/patient');
             $this->layout()->setVariable('registration_active', 'active');
+            $physicians = $this->getPhysicianTable()->fetchAll();
+            
         }elseif ($this->session->role === 'physician') {
             $this->layout('layout/physician');
             $this->layout()->setVariable('registration_active', 'active');
+                      
+            $patient = $this->getPatientTable()->fetchAll();
         }elseif ($this->session->role === 'register')
         {
             $this->layout('layout/register');
@@ -111,7 +118,8 @@ class RegistrationController extends AbstractActionController
          $view = new ViewModel(array(
             'physicians' => $form,
             'patient'    => $formPatient,
-            'lekarze'    => $this->getPhysicianTable()->fetchAll(),
+            'lekarze'    => $physicians,
+            'patients'    => $patient,
             'dni'  => $this->getSchedulerTable()->fetchAll(),
             'godziny'  => $this->getSchedulerTable()->fetchAll(),
         ));
@@ -239,13 +247,27 @@ class RegistrationController extends AbstractActionController
     
     public function oneAction()
     {
+         
         $this->layout('layout/patient');
         $this->layout()->setVariable('registration_active', 'active');
         
-        $id = (int) $this->params()->fromRoute('param');
-        $this->session->idPhysician = $id;
-        $resultDay = $this->getSchedulerTable()->getSchedulerPhysician($id,date('m'));
+        if ($this->session->role === 'patient')
+        {
+            $id = (int) $this->params()->fromRoute('param');
+            $this->session->idPhysician = $id;
+            $resultDay = $this->getSchedulerTable()->getSchedulerPhysician($id,date('m'));
+        } 
         
+        if ($this->session->role === 'physician')
+        {
+            $id = $this->session->id;
+            
+            $this->session->idPhysician = $id;
+            $this->session->idPatient = (int) $this->params()->fromRoute('param');
+            $resultDay = $this->getSchedulerTable()->getSchedulerPhysician($id,date('m'));
+        }
+        
+       
         return new ViewModel(array(
             'days'  =>  $resultDay
         ));
@@ -253,6 +275,7 @@ class RegistrationController extends AbstractActionController
     
     public function twoAction()
     {
+        echo $this->session->idPatient;
         $this->layout('layout/patient');
         $this->layout()->setVariable('registration_active', 'active');
             
@@ -290,10 +313,18 @@ class RegistrationController extends AbstractActionController
        
     public function threeAction()
     {
+        
         $this->layout('layout/patient');
         $this->layout()->setVariable('registration_active', 'active');
         
-        $patientId      =   $this->session->id;
+        if ($this->session->role === 'patient')
+        {
+            $patientId      =   $this->session->id;
+        }
+        if ($this->session->role === 'physician')
+        {
+            $patientId = $this->session->idPatient;
+        }
         $physicianId    =   $this->session->idPhysician;
         $visit_date     =   $this->session->visit_date;
         $visit_time     =   $this->params()->fromRoute('param');
@@ -305,7 +336,9 @@ class RegistrationController extends AbstractActionController
             'registration_date' =>  date('Y-m-d H:s'),
         );
   
-        $physicianInfo = $this->getPhysicianTable()->getPhysician($physicianId);
+        
+            $physicianInfo = $this->getPhysicianTable()->getPhysician($physicianId);
+        
         echo '<pre>';
         var_dump($data);
         echo '</pre>';
@@ -318,7 +351,16 @@ class RegistrationController extends AbstractActionController
                 . 'W dniu: '.$visit_date.'<br />'
                 . 'Na godzinę: '.$visit_time;
         $this->sendMail($this->session->email, 'Rejestracja wizyty', $body);
-        $this->redirect()->toRoute('patient');
+        switch ($this->session->role)
+        {
+            case patient:
+                $this->redirect()->toRoute('patient');
+                break;
+            case physician:
+                $this->redirect()->toRoute('physician');
+                break;
+        }
+        
         
     }
   

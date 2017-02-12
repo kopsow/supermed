@@ -61,7 +61,7 @@ $this->session = new \Zend\Session\Container('loginData');
            <?php 
            $this->session = new \Zend\Session\Container('loginData');
            if (!$this->session->login) : ?>
-            <p><a href="<?php echo $this->url('autoryzacja')?>">Zaloguj się</a></p>
+            
              <?php else : ?>   
             <p>Witaj <?php echo $this->session->name?><a href="<?php echo $this->url('autoryzacja',array('action'=>'logout'))?>"> Wyloguj</a></p>
              <?php endif; ?>
