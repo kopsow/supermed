@@ -9,6 +9,15 @@
         <div class="alert alert-warning" style="text-align: center">
             <?php echo $this->physicianMessage?>
         </div>
+    <?php elseif ($this->patientMessage) :?>
+        <div class="alert alert-info" style="text-align: center">
+            <?php echo $this->patientMessage?>
+        </div>
+
+    <?php elseif ($this->adminMessage) :?>
+        <div class="alert alert-dismissable" style="text-align: center">
+            <?php echo $this->adminMessage?>
+        </div>
     <?php endif; ?>
 <?php
 //$form->setAttribute('action', $this->url('autoryzacja'))->prepare();
@@ -25,7 +34,7 @@ echo $this->form()->closeTag($form);
     <div class="btn btn-success center-block">Zaloguj</div>
 </div>
         <a href="<?php echo $this->url('patient',array('action'=>'new'))?>" style="text-align: center;display:block;padding-top:0.5em">Nie masz konta? </a>
-         <a href="<?php echo $this->url('patient',array('action'=>'remember'))?>" style="text-align: center;display:block;padding-top:0.5em">Zapomniałeś hasła? </a>
+         <!--<a href="<?php echo $this->url('patient',array('action'=>'remember'))?>" style="text-align: center;display:block;padding-top:0.5em">Zapomniałeś hasła? </a>-->
 </div>
     </div>
 

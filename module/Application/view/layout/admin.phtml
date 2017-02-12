@@ -1,4 +1,7 @@
-<?php echo $this->doctype(); ?>
+<?php echo $this->doctype(); 
+$this->session = new \Zend\Session\Container('loginData');
+
+?>
 
 <html lang="en">
     <head>
@@ -39,16 +42,15 @@
                 </div>
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav">
-                        <li class="<?php echo $this->home_active; ?>">
-                            <a href="<?php echo $this->url('home') ?>"></a></li>
-                        <li class="<?php echo $this->patient_active; ?>">
-                            <a href="<?php echo $this->url('patient') ?>">Strefa pacjenta</a></li>
-                        <li class="<?php echo $this->physician_active; ?>">
-                            <a href="<?php echo $this->url('physician') ?>">Strefa lekarza</a></li>
-                        <li class="<?php echo $this->register_active; ?>">
-                            <a href="<?php echo $this->url('register') ?>">Strefa rejestrtorki</a></li>
-                        <li class="<?php echo $this->admin_active; ?>">
-                            <a href="<?php echo $this->url('administrator') ?>">Strefa administratora</a></li>
+                    
+                    <li class="<?php echo $this->list_active; ?>">
+                        <a href="<?php echo $this->url('register') ?>">Strona startowa</a></li>
+                    <li class="<?php echo $this->registrationList_active; ?>">
+                        <a href="<?php echo $this->url('physician',array('action'=>'add')) ?>">Dodawanie lekarzy</a></li>
+                    <li class="<?php echo $this->registration_active; ?>">
+                        <a href="<?php echo $this->url('physician',array('action'=>'show')) ?>">Lista lekarzy</a></li>
+                    <li class="<?php echo $this->patient_active; ?>">
+                        <a href="<?php echo $this->url('patient') ?>">Lista pacjentów</a></li>
 
                     </ul>
                 </div><!--/.nav-collapse -->
@@ -61,7 +63,7 @@
            if (!$this->session->login) : ?>
             
              <?php else : ?>   
-            <p>Witaj <?php echo $this->session->name." ".$this->session->surname?><a href="<?php echo $this->url('autoryzacja',array('action'=>'logout'))?>"> Wyloguj</a></p>
+            <p>Witaj <?php echo $this->session->name?><a href="<?php echo $this->url('autoryzacja',array('action'=>'logout'))?>"> Wyloguj</a></p>
              <?php endif; ?>
             </div>
             
@@ -75,3 +77,4 @@
         <?php echo $this->inlineScript() ?>
     </body>
 </html>
+

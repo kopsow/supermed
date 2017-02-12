@@ -53,12 +53,53 @@ class AuthorizationController extends AbstractActionController
         $this->redirect()->toRoute('home');
         
     }
-    
+    public function adminAction()
+    {
+        $message = null;
+        $request = $this->getRequest();
+        $this->layout()->setVariable('admin_active', 'active');
+        
+        if ($request->isPost())
+        {
+            $email = $request->getPost('login');
+            $pass  = $request->getPost('password');
+            $result = $this->getUsersTable()->loginUsers($email,$pass);
+            
+           
+            if ($result)
+            {
+                $this->session->login=true;
+                $this->session->id           = $result->id;
+                $this->session->name         = $result->name;
+                $this->session->surname      = $result->surname;
+                $this->session->email        = $result->email;
+                $this->session->role         = 'admin';
+                
+                $this->redirect()->toRoute('patient'); 
+            
+            } else {
+                $message = 'Błędny login lub hasło';
+                
+            }
+        }
+        
+        $form = new LoginForm();
+        $form->setAttribute('action', $this->url()->fromRoute('autoryzacja',array('action'=>'admin')));
+        $view = new ViewModel(array(
+            'form'          =>  $form,
+            'patientMessage'  =>  'Logujesz się jako ADMINISTRATOR',
+            'loginMessage'  =>  $message,
+            'mail'         =>  $request->getPost('login')
+        ));
+        $view->setTemplate('application/authorization/login');
+        
+        return $view;
+    }
     public function patientAction()
     {
         $message=NULL;
-            $this->layout('layout/patient');
-            $this->layout()->setVariable('patient_active', 'active');
+           
+        $this->layout()->setVariable('patient_active', 'active');
         
          $request = $this->getRequest();
        
@@ -91,6 +132,7 @@ class AuthorizationController extends AbstractActionController
         $form->setAttribute('action', $this->url()->fromRoute('autoryzacja',array('action'=>'patient')));
         $view = new ViewModel(array(
             'form'          =>  $form,
+            'patientMessage'  =>  'Logujesz się jako PACJENT',
             'loginMessage'  =>  $message,
             'mail'         =>  $request->getPost('login')
         ));
@@ -101,7 +143,7 @@ class AuthorizationController extends AbstractActionController
     
     public function registerAction()
     {
-        $this->layout('layout/register');
+        $this->layout()->setVariable('register_active', 'active');
         $message = null ;
         $request = $this->getRequest();
         $form = new LoginForm();
@@ -144,7 +186,7 @@ class AuthorizationController extends AbstractActionController
     }
     public function physicianAction()
     {
-        $this->layout('layout/physician');
+        $this->layout()->setVariable('physician_active', 'active');
         $message = null ;
         $request = $this->getRequest();
         $form = new LoginForm();

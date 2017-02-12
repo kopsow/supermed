@@ -6,13 +6,16 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Application\Model\Users;
 use Application\Form\UsersForm;
-use Zend\Session\Container;
+
 
 class AdministratorController extends AbstractActionController
 {
     public $usersTable;
     public $roleTable;
   
+    public function __construct() {
+       $this->session = new \Zend\Session\Container('loginData');
+    }
     public function getUsersTable()
     {
         if (!$this->usersTable) {
@@ -33,10 +36,17 @@ class AdministratorController extends AbstractActionController
    
     public function indexAction()
     {
+        if(!$this->session->login)
+        {
+            $this->redirect()->toRoute('autoryzacja',array('action'=>'admin'));
+        } else {
+            $this->layout('layout/admin');
+            $this->layout()->setVariable('admin_active', 'active');
+            
+        }
         
         return new ViewModel(array(
-            'users'     =>  $this->getUsersTable()->fetchAll(),
-            'form'      => new \Application\Form\UsersForm()
+            'users'  =>  $this->getUsersTable()->fetchAll()
         ));
     }
     public function addAction()
